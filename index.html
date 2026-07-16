@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manager SWE Master Handbook · Mastercard Prep</title>
+<meta name="description" content="Offline interactive 12+ week curriculum for Manager Software Engineering roles." />
+<style>
+/* ============================================================
+   THEME TOKENS
+   ============================================================ */
+:root{
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 30px rgba(0,0,0,.12);
+  --transition: .2s ease;
+}
+html[data-theme="dark"]{
+  --bg:#0d1117; --bg2:#141b25; --bg3:#1b2432; --surface:#161d29;
+  --border:#26303e; --text:#e6edf3; --muted:#93a1b5; --faint:#5d6b7d;
+  --brand:#ff5f00; --brand2:#f79e1b; --accent:#4f8cff; --green:#3fb950;
+  --red:#f85149; --yellow:#e3b341; --purple:#a371f7;
+  --card:#141b25; --hover:#1d2734; --chip:#222d3d;
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --bg2:#ffffff; --bg3:#eef1f7; --surface:#ffffff;
+  --border:#e1e6ef; --text:#1a2230; --muted:#5a6676; --faint:#95a0b0;
+  --brand:#eb001b; --brand2:#f79e1b; --accent:#2563eb; --green:#1a7f37;
+  --red:#cf222e; --yellow:#bf8700; --purple:#8250df;
+  --card:#ffffff; --hover:#f0f3f9; --chip:#eef1f7;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font); background:var(--bg); color:var(--text);
+  line-height:1.6; -webkit-font-smoothing:antialiased; transition:background var(--transition),color var(--transition);
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.sidebar{
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;
+}
+.brand{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center}
+.brand .logo{
+  width:42px;height:42px;border-radius:11px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:grid;place-items:center;font-weight:800;color:#fff;font-size:20px;
+  box-shadow:0 4px 14px rgba(235,0,27,.35);
+}
+.brand h1{font-size:15px;margin:0;line-height:1.2}
+.brand small{color:var(--muted);font-size:11px}
+.nav{padding:10px;overflow-y:auto;flex:1}
+.nav .group-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);padding:14px 12px 6px;font-weight:700}
+.nav a.item{
+  display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:var(--radius-sm);
+  color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer;transition:var(--transition);margin-bottom:2px;
+}
+.nav a.item:hover{background:var(--hover);color:var(--text);text-decoration:none}
+.nav a.item.active{background:linear-gradient(90deg,rgba(255,95,0,.16),transparent);color:var(--text);box-shadow:inset 3px 0 0 var(--brand)}
+.nav a.item .ic{width:18px;text-align:center;font-size:15px}
+.nav a.item .badge{margin-left:auto;background:var(--chip);color:var(--muted);font-size:10.5px;padding:1px 7px;border-radius:20px;font-weight:700}
+.sidebar-foot{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.sidebar-foot button{flex:1}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+  padding:12px 26px;display:flex;align-items:center;gap:14px;
+}
+.topbar .menu-btn{display:none}
+.search-wrap{position:relative;flex:1;max-width:520px}
+.search-wrap input{
+  width:100%;padding:10px 14px 10px 38px;border-radius:30px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text);font-size:13.5px;outline:none;transition:var(--transition);
+}
+.search-wrap input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,95,0,.15)}
+.search-wrap .si{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--faint)}
+.search-results{
+  position:absolute;top:48px;left:0;right:0;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);max-height:60vh;overflow:auto;display:none;z-index:60;
+}
+.search-results.show{display:block}
+.search-results .sr{padding:11px 15px;border-bottom:1px solid var(--border);cursor:pointer}
+.search-results .sr:hover{background:var(--hover)}
+.search-results .sr b{color:var(--brand)}
+.search-results .sr small{color:var(--muted);display:block;font-size:11.5px}
+.topbar .spacer{flex:1}
+.iconbtn{
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  width:40px;height:40px;border-radius:11px;cursor:pointer;font-size:16px;transition:var(--transition);
+  display:grid;place-items:center;
+}
+.iconbtn:hover{background:var(--hover);border-color:var(--brand)}
+.btn{
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  padding:9px 15px;border-radius:11px;cursor:pointer;font-size:13px;font-weight:600;transition:var(--transition);
+  display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover{background:var(--hover);border-color:var(--brand)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:none}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.content{padding:26px 34px 80px;max-width:1120px;width:100%;margin:0 auto;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+.page-head{margin-bottom:22px}
+.page-head h2{font-size:26px;margin:0 0 6px;letter-spacing:-.02em}
+.page-head p{color:var(--muted);margin:0}
+.eyebrow{color:var(--brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+.grid{display:grid;gap:16px}
+.grid.c2{grid-template-columns:repeat(2,1fr)}
+.grid.c3{grid-template-columns:repeat(3,1fr)}
+.grid.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:var(--transition)}
+.card.hover:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat .k{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
+.stat .v{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.stat .v small{font-size:14px;color:var(--muted);font-weight:600}
+.stat .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px}
+
+.progress{height:9px;background:var(--bg3);border-radius:20px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:20px;transition:width .6s ease}
+.ring{--p:0;--sz:150px;width:var(--sz);height:var(--sz);border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--brand) calc(var(--p)*1%), var(--bg3) 0);position:relative}
+.ring::before{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--card)}
+.ring .rc{position:relative;text-align:center}
+.ring .rc b{font-size:30px;font-weight:800}
+.ring .rc span{font-size:11px;color:var(--muted);display:block}
+
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);color:var(--muted);
+  padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:600;border:1px solid var(--border)}
+.chip.brand{background:rgba(255,95,0,.13);color:var(--brand);border-color:transparent}
+.chip.green{background:rgba(63,185,80,.14);color:var(--green);border-color:transparent}
+.chip.blue{background:rgba(79,140,255,.14);color:var(--accent);border-color:transparent}
+.chip.purple{background:rgba(163,113,247,.15);color:var(--purple);border-color:transparent}
+.chip.yellow{background:rgba(227,179,65,.15);color:var(--yellow);border-color:transparent}
+.chip.red{background:rgba(248,81,73,.15);color:var(--red);border-color:transparent}
+
+/* Week accordion */
+.week-block{margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.week-head{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:var(--transition)}
+.week-head:hover{background:var(--hover)}
+.week-head .wn{width:44px;height:44px;border-radius:11px;background:var(--bg3);display:grid;place-items:center;font-weight:800;font-size:16px;flex:0 0 auto}
+.week-head h3{margin:0;font-size:16px}
+.week-head p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.week-head .wp{margin-left:auto;text-align:right;min-width:120px}
+.week-head .wp small{color:var(--muted);font-size:11px}
+.week-head .caret{transition:transform var(--transition);color:var(--muted)}
+.week-block.open .caret{transform:rotate(90deg)}
+.week-days{display:none;padding:6px 14px 14px}
+.week-block.open .week-days{display:block}
+.day-row{display:flex;align-items:center;gap:13px;padding:11px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)}
+.day-row:hover{background:var(--hover)}
+.day-row .dnum{width:30px;height:30px;border-radius:8px;background:var(--bg3);display:grid;place-items:center;font-size:12px;font-weight:700;flex:0 0 auto}
+.day-row.done .dnum{background:var(--green);color:#fff}
+.day-row .dt{flex:1;min-width:0}
+.day-row .dt b{font-size:13.5px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-row .dt small{color:var(--muted);font-size:11.5px}
+.day-row .dcheck{color:var(--faint);font-size:18px}
+.day-row.done .dcheck{color:var(--green)}
+
+/* Lesson view */
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap}
+.lesson-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:22px;position:relative;overflow:hidden}
+.lesson-hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,95,0,.18),transparent 70%)}
+.lesson-hero h2{margin:8px 0 6px;font-size:24px;letter-spacing:-.02em}
+.lesson-hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.section-block{margin-bottom:26px}
+.section-block > h3{font-size:16px;display:flex;align-items:center;gap:9px;margin:0 0 12px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.section-block > h3 .si2{width:28px;height:28px;border-radius:8px;background:var(--bg3);display:grid;place-items:center;font-size:14px}
+.prose{color:var(--text)}
+.prose p{margin:0 0 12px}
+.prose ul{margin:0 0 12px;padding-left:20px}
+.prose li{margin-bottom:6px}
+.prose code{background:var(--bg3);padding:2px 6px;border-radius:5px;font-family:var(--mono);font-size:12.5px;color:var(--brand2)}
+.prose pre{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;overflow:auto;margin:0 0 14px}
+.prose pre code{background:none;padding:0;color:var(--text);font-size:12.5px;line-height:1.7}
+.prose h4{margin:18px 0 8px;font-size:14.5px}
+.callout{border-left:3px solid var(--brand);background:var(--bg3);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;margin:0 0 14px}
+.callout.tip{border-color:var(--green)}
+.callout.warn{border-color:var(--yellow)}
+.callout b{color:var(--text)}
+
+.reslist{display:flex;flex-direction:column;gap:8px}
+.reslink{display:flex;align-items:center;gap:12px;padding:12px 15px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);transition:var(--transition)}
+.reslink:hover{border-color:var(--brand);text-decoration:none;background:var(--hover)}
+.reslink .ri{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+.reslink .rt{flex:1;min-width:0}
+.reslink .rt b{color:var(--text);font-size:13.5px;display:block}
+.reslink .rt small{color:var(--muted);font-size:11.5px;word-break:break-all}
+.reslink .rgo{color:var(--faint)}
+
+.qa{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;background:var(--surface)}
+.qa .q{padding:14px 16px;cursor:pointer;font-weight:600;font-size:14px;display:flex;gap:11px;align-items:flex-start}
+.qa .q .qn{background:var(--chip);color:var(--brand);width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:12px;flex:0 0 auto}
+.qa .a{display:none;padding:0 16px 16px 51px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--border);padding-top:14px}
+.qa.open .a{display:block}
+.qa .a .lvl{color:var(--brand);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+
+.checklist{display:flex;flex-direction:column;gap:6px}
+.cl-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);background:var(--surface)}
+.cl-item:hover{background:var(--hover)}
+.cl-item .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--faint);display:grid;place-items:center;color:transparent;font-size:12px;transition:var(--transition);flex:0 0 auto}
+.cl-item.checked .box{background:var(--green);border-color:var(--green);color:#fff}
+.cl-item.checked span{color:var(--muted);text-decoration:line-through}
+
+.notes-area{width:100%;min-height:150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px;color:var(--text);font-family:var(--font);font-size:13.5px;resize:vertical;outline:none}
+.notes-area:focus{border-color:var(--brand)}
+
+.readiness{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.bars{flex:1;min-width:280px;display:flex;flex-direction:column;gap:14px}
+.bar-row .bl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;color:var(--muted);font-weight:600}
+.bar-row .bl b{color:var(--text)}
+
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cal .cd{aspect-ratio:1;border:1px solid var(--border);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition);background:var(--surface);position:relative;font-size:12px;padding:4px}
+.cal .cd:hover{border-color:var(--brand);transform:scale(1.04)}
+.cal .cd b{font-size:11px;color:var(--muted)}
+.cal .cd .dn{font-size:16px;font-weight:800;margin-top:2px}
+.cal .cd.done{background:linear-gradient(135deg,rgba(63,185,80,.18),transparent);border-color:var(--green)}
+.cal .cd.done::after{content:"✓";position:absolute;top:4px;right:6px;color:var(--green);font-weight:800;font-size:11px}
+.cal-legend{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--muted)}
+
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .big{font-size:48px;margin-bottom:12px}
+
+.backdrop{display:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);
+  padding:12px 22px;border-radius:30px;font-weight:600;font-size:13px;box-shadow:var(--shadow);z-index:200;transition:transform .35s cubic-bezier(.2,1.2,.3,1);opacity:.97}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap}
+.tabs button{background:none;border:none;color:var(--muted);padding:10px 16px;cursor:pointer;font-size:13.5px;font-weight:600;border-bottom:2px solid transparent;transition:var(--transition)}
+.tabs button:hover{color:var(--text)}
+.tabs button.active{color:var(--brand);border-bottom-color:var(--brand)}
+
+.diagram{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:0 0 14px;overflow-x:auto}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.svg-box{fill:var(--surface);stroke:var(--brand);stroke-width:1.5}
+.svg-box2{fill:var(--bg3);stroke:var(--accent);stroke-width:1.5}
+.svg-t{fill:var(--text);font-size:12px;font-family:var(--font);font-weight:600}
+.svg-tm{fill:var(--muted);font-size:10px;font-family:var(--font)}
+.svg-line{stroke:var(--faint);stroke-width:1.5;fill:none;marker-end:url(#arrow)}
+
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.filterbar .chip{cursor:pointer}
+.filterbar .chip.on{background:var(--brand);color:#fff;border-color:transparent}
+
+/* Responsive */
+@media(max-width:1000px){
+  .grid.c4{grid-template-columns:repeat(2,1fr)}
+  .grid.c3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;width:280px;z-index:100;transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:none}
+  .topbar .menu-btn{display:grid}
+  .grid.c2,.grid.c3,.grid.c4{grid-template-columns:1fr}
+  .content{padding:20px 18px 80px}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
+  .backdrop.show{display:block}
+}
+/* Print */
+@media print{
+  .sidebar,.topbar,.lesson-nav,.no-print{display:none!important}
+  .app{display:block}
+  .content{max-width:100%;padding:0}
+  .card,.qa,.reslink,.section-block{break-inside:avoid}
+  body{background:#fff;color:#000}
+  .qa .a{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>Manager SWE Handbook</h1>
+        <small>Mastercard Prep · Offline</small>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="group-label">Overview</div>
+      <a class="item" data-route="dashboard"><span class="ic">📊</span> Dashboard</a>
+      <a class="item" data-route="curriculum"><span class="ic">📚</span> Curriculum <span class="badge" id="nav-days">84</span></a>
+      <a class="item" data-route="calendar"><span class="ic">📅</span> Calendar</a>
+      <a class="item" data-route="analytics"><span class="ic">📈</span> Analytics</a>
+      <a class="item" data-route="readiness"><span class="ic">🎯</span> Interview Readiness</a>
+      <div class="group-label">Study</div>
+      <a class="item" data-route="tracks"><span class="ic">🧩</span> Tracks</a>
+      <a class="item" data-route="bookmarks"><span class="ic">🔖</span> Bookmarks <span class="badge" id="nav-bm">0</span></a>
+      <a class="item" data-route="readinglist"><span class="ic">🗂️</span> Reading List <span class="badge" id="nav-rl">0</span></a>
+      <a class="item" data-route="notes"><span class="ic">📝</span> My Notes</a>
+      <a class="item" data-route="interview"><span class="ic">💬</span> Interview Bank</a>
+      <div class="group-label">Toolkit</div>
+      <a class="item" data-route="resume"><span class="ic">📄</span> Resume & Negotiation</a>
+      <a class="item" data-route="about"><span class="ic">ℹ️</span> How to use</a>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="btn ghost" id="exportBtn" title="Export progress">⬇ Export</button>
+      <button class="btn ghost" id="importBtn" title="Import progress">⬆ Import</button>
+      <input type="file" id="importFile" accept="application/json" hidden />
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="iconbtn menu-btn" id="menuBtn">☰</button>
+      <div class="search-wrap">
+        <span class="si">🔍</span>
+        <input id="search" type="text" placeholder="Search topics, days, interview questions… (Ctrl/⌘+K)" autocomplete="off" />
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <div class="spacer"></div>
+      <button class="iconbtn" id="printBtn" title="Print / PDF">🖨️</button>
+      <button class="iconbtn" id="themeBtn" title="Toggle theme">🌙</button>
+    </header>
+    <div class="content" id="view"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CURRICULUM DATA  (populated by data.js block below)
+   ============================================================ */
+</script>
+<script id="curriculum-data">
+/* ============================================================
+   CURRICULUM DATA — 12 weeks · 84 days
+   Sections blend: Technical + Engineering Management + Payments
+   ============================================================ */
+const A = (t,u)=>({t,u});            // article/reference
+const V = (t,u)=>({t,u});            // video
+const Q = (q,a,lvl='Manager-level answer')=>({q,a,lvl}); // interview Q&A
+
+const WEEKS = [];
+
+/* ---------- WEEK 1 : Java Mastery Foundations ---------- */
+WEEKS.push({
+  n:1, title:"Java Mastery Foundations", section:"Java",
+  summary:"Core language, JVM internals, OOP, collections and the mental models a manager must still reason about in reviews.",
+  days:[
+  {
+    t:"JVM, JDK, JRE & How Java Runs",
+    obj:["Explain the JVM/JRE/JDK relationship","Trace source → bytecode → native execution","Describe JIT compilation & class loading"],
+    exp:`<p>Java's promise is <b>"write once, run anywhere."</b> Your <code>.java</code> source is compiled by <code>javac</code> into platform-neutral <b>bytecode</b> (<code>.class</code>), which the <b>JVM</b> executes on any OS. The <b>JDK</b> = tools (compiler, debugger) + the <b>JRE</b> = JVM + core libraries needed to run.</p>
+    <p>At runtime the <b>class loader</b> loads bytecode, the <b>bytecode verifier</b> checks safety, and the <b>interpreter</b> executes it. Hot code paths are promoted by the <b>JIT compiler</b> to native machine code for speed — this is why the JVM often matches C-like throughput after warm-up.</p>
+    <div class="callout tip"><b>Manager lens:</b> When a team says "it's slow on startup but fast later," that's JIT warm-up. Knowing this prevents wasted optimization effort.</div>`,
+    diagram:`<svg viewBox="0 0 640 150"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--faint)"/></marker></defs>
+    <rect class="svg-box" x="10" y="45" width="110" height="50" rx="8"/><text class="svg-t" x="30" y="68">Source .java</text><text class="svg-tm" x="46" y="84">javac</text>
+    <line class="svg-line" x1="120" y1="70" x2="180" y2="70"/>
+    <rect class="svg-box2" x="180" y="45" width="120" height="50" rx="8"/><text class="svg-t" x="205" y="68">Bytecode</text><text class="svg-tm" x="215" y="84">.class</text>
+    <line class="svg-line" x1="300" y1="70" x2="360" y2="70"/>
+    <rect class="svg-box" x="360" y="30" width="130" height="80" rx="8"/><text class="svg-t" x="405" y="55">JVM</text><text class="svg-tm" x="378" y="75">ClassLoader</text><text class="svg-tm" x="392" y="92">JIT + GC</text>
+    <line class="svg-line" x1="490" y1="70" x2="550" y2="70"/>
+    <rect class="svg-box2" x="550" y="45" width="80" height="50" rx="8"/><text class="svg-t" x="565" y="74">Native OS</text></svg>`,
+    articles:[A("Oracle: The Java Platform overview","https://docs.oracle.com/javase/tutorial/getStarted/intro/definition.html"),A("Baeldung: JVM, JRE and JDK","https://www.baeldung.com/jvm-vs-jre-vs-jdk")],
+    videos:[V("Java in 100 Seconds — Fireship","https://www.youtube.com/watch?v=l9AzO1FMgM8"),V("How the JVM works — Java Brains","https://www.youtube.com/watch?v=ZBJnJDlrJfA")],
+    refs:[A("OpenJDK HotSpot docs","https://openjdk.org/groups/hotspot/"),A("JLS — Java Language Specification","https://docs.oracle.com/javase/specs/")],
+    lab:"Install JDK 21. Write, compile with javac, and run a 'Hello, Mastercard' program. Then run <code>javap -c</code> on the class to read the bytecode.",
+    proj:"Create a CLI 'system info' tool that prints JVM version, available processors, and max heap using the Runtime API.",
+    arch:"Sketch the flow from source code to native execution and annotate where JIT, class loading and GC sit.",
+    qa:[Q("What is the difference between JDK, JRE and JVM?","JVM is the abstract runtime that executes bytecode; JRE bundles the JVM with core class libraries to run apps; JDK is the full developer kit (JRE + compiler, javadoc, debugger). As a manager I care that build agents ship a JDK while production containers often ship only a JRE-sized runtime to shrink the image."),Q("Why is Java called platform independent but the JVM platform dependent?","Bytecode is portable; the JVM is a native binary compiled per-OS/architecture that translates that portable bytecode. So the artifact is portable, the runtime is not — which is exactly what lets one build run everywhere.")],
+    rev:["I can explain bytecode vs native code","I understand JIT warm-up","I ran javap on a class"]
+  },
+  {
+    t:"Variables, Types, Operators & Control Flow",
+    obj:["Differentiate primitives vs references","Use casting, autoboxing safely","Write clean control-flow and switch expressions"],
+    exp:`<p>Java has 8 <b>primitives</b> (<code>int, long, double, boolean, char, byte, short, float</code>) stored by value, and <b>reference types</b> (objects, arrays) stored as pointers to heap memory. <b>Autoboxing</b> converts <code>int ↔ Integer</code> automatically — convenient but a hidden allocation cost in tight loops.</p>
+    <p>Modern Java gives you <b>switch expressions</b> and <b>pattern matching</b> that reduce boilerplate and bugs:</p>
+    <pre><code>String grade = switch (score / 10) {
+    case 10, 9 -> "A";
+    case 8 -> "B";
+    default -> "C";
+};</code></pre>
+    <div class="callout warn"><b>Watch:</b> <code>==</code> compares references for objects; use <code>.equals()</code> for value equality. The classic <code>Integer</code> cache bug (−128..127) trips many engineers.</div>`,
+    articles:[A("Baeldung: Java Primitives","https://www.baeldung.com/java-primitives"),A("Oracle: Switch Expressions","https://docs.oracle.com/en/java/javase/17/language/switch-expressions.html")],
+    videos:[V("Java Data Types — Amigoscode","https://www.youtube.com/watch?v=Yn1Fc76fkkM"),V("Java Full Course — Bro Code","https://www.youtube.com/watch?v=xk4_1vDrzzo")],
+    refs:[A("Oracle Tutorials: Language Basics","https://docs.oracle.com/javase/tutorial/java/nutsandbolts/index.html")],
+    lab:"Write a program demonstrating overflow with <code>int</code> vs <code>long</code>, and prove the Integer cache with <code>==</code> at 100 vs 1000.",
+    proj:"Build a 'currency converter' that reads amount + rate and formats output using BigDecimal to avoid floating errors.",
+    arch:"Draw a memory diagram showing where a primitive int and an Integer object live (stack vs heap).",
+    qa:[Q("Why should money never be stored in a double?","Doubles are binary floating point and cannot exactly represent decimal fractions, causing rounding drift — unacceptable in payments. Use BigDecimal or minor-unit integers (cents). I enforce this in code review standards for any financial team."),Q("What is autoboxing and its risk?","Automatic conversion between primitives and their wrappers. The risk is silent allocation and NullPointerExceptions when unboxing a null Integer — a subtle production bug I watch for in hot paths.")],
+    rev:["I know the 8 primitives","I can explain == vs equals","I used a switch expression"]
+  },
+  {
+    t:"OOP Deep Dive: Classes, Objects, Encapsulation",
+    obj:["Model real domains with classes","Apply encapsulation & immutability","Use constructors, this, and static correctly"],
+    exp:`<p>Object orientation models a domain as collaborating objects. <b>Encapsulation</b> hides internal state behind methods so invariants can't be violated. In payments, a <code>Money</code> or <code>Account</code> object should never expose a mutable balance directly.</p>
+    <p><b>Immutability</b> (final fields, no setters) makes objects thread-safe and predictable — a cornerstone of reliable financial systems.</p>
+    <pre><code>public final class Money {
+    private final long minorUnits;   // cents
+    private final String currency;
+    public Money(long m, String c){ this.minorUnits=m; this.currency=c; }
+    public Money plus(Money o){ /* validate currency */ return new Money(minorUnits+o.minorUnits, currency); }
+}</code></pre>`,
+    articles:[A("Baeldung: Java OOP","https://www.baeldung.com/java-oop"),A("Oracle: Object-Oriented Concepts","https://docs.oracle.com/javase/tutorial/java/concepts/index.html")],
+    videos:[V("OOP Explained — Programming with Mosh","https://www.youtube.com/watch?v=pTB0EiLXUC8"),V("Java OOP Full — Kunal Kushwaha","https://www.youtube.com/watch?v=BSVKUk58K6U")],
+    refs:[A("Effective Java (Bloch) — item summaries","https://github.com/HugoMatilla/Effective-JAVA-Summary")],
+    lab:"Design an immutable <code>Money</code> class with add/subtract that rejects mismatched currencies.",
+    proj:"Model a mini <b>Wallet</b> domain: Account, Money, Transaction with encapsulated balance updates.",
+    arch:"UML-sketch the Wallet domain showing relationships and which fields are final.",
+    qa:[Q("Why prefer immutable objects in financial code?","They are inherently thread-safe, cache-friendly, and prevent accidental state corruption across concurrent transactions. As a manager I push immutability for value objects like Money to eliminate a whole class of concurrency bugs."),Q("What does encapsulation buy a team?","It localizes invariants so callers can't put an object in an invalid state, which reduces defects and lets internals evolve without breaking consumers — critical for large teams sharing domain code.")],
+    rev:["I built an immutable class","I can explain encapsulation's benefit","I avoided public mutable state"]
+  },
+  {
+    t:"Inheritance, Polymorphism, Interfaces & Abstraction",
+    obj:["Choose composition vs inheritance","Use interfaces & default methods","Apply polymorphism for extensibility"],
+    exp:`<p><b>Inheritance</b> models an "is-a" relationship; <b>interfaces</b> define capability contracts. Modern design favors <b>composition over inheritance</b> to avoid rigid hierarchies. Polymorphism lets you code to an interface (<code>PaymentProcessor</code>) and swap implementations (<code>CardProcessor</code>, <code>WalletProcessor</code>) without changing callers.</p>
+    <pre><code>interface PaymentProcessor { Result charge(Money m); }
+class CardProcessor implements PaymentProcessor { public Result charge(Money m){...} }</code></pre>
+    <div class="callout tip"><b>Manager lens:</b> Interface-driven design is what makes systems testable (mocks) and extensible — a recurring theme in architecture reviews.</div>`,
+    articles:[A("Baeldung: Inheritance & Composition","https://www.baeldung.com/java-inheritance-composition"),A("Oracle: Interfaces","https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html")],
+    videos:[V("Polymorphism in Java — Coding with John","https://www.youtube.com/watch?v=jhDUxynEQRI"),V("Interfaces — Amigoscode","https://www.youtube.com/watch?v=Ov6ZKnH2mQg")],
+    refs:[A("Effective Java: Favor composition","https://github.com/HugoMatilla/Effective-JAVA-Summary#18-favor-composition-over-inheritance")],
+    lab:"Define a <code>PaymentProcessor</code> interface with two implementations and select one at runtime via a factory.",
+    proj:"Extend the Wallet to support multiple payment methods through a common interface.",
+    arch:"Diagram a Strategy-style processor selection and where the interface boundary sits.",
+    qa:[Q("Composition vs inheritance — when do you choose which?","Inheritance for genuine 'is-a' with stable hierarchies; composition for 'has-a' and to avoid the fragile base-class problem. I default to composition + interfaces because it keeps modules decoupled and testable at scale."),Q("What problem do interfaces solve on a large team?","They let teams agree on a contract and work in parallel against mocks, and allow implementations to be swapped (e.g., a new payment rail) without ripple effects — reducing coordination cost.")],
+    rev:["I coded to an interface","I can argue composition vs inheritance","I used polymorphism to swap behavior"]
+  },
+  {
+    t:"Collections Framework & Generics",
+    obj:["Pick the right List/Set/Map","Understand time complexity trade-offs","Use generics for type safety"],
+    exp:`<p>The Collections Framework is your daily toolkit. Rules of thumb: <code>ArrayList</code> for indexed access, <code>LinkedList</code> rarely, <code>HashMap</code> for O(1) lookup, <code>TreeMap</code> for sorted keys, <code>HashSet</code> for uniqueness. <b>Generics</b> give compile-time type safety and remove casts.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px" class="prose">
+    <tr><td><b>Structure</b></td><td><b>Get</b></td><td><b>Add</b></td><td><b>Use when</b></td></tr>
+    <tr><td>ArrayList</td><td>O(1)</td><td>O(1)*</td><td>indexed, read-heavy</td></tr>
+    <tr><td>HashMap</td><td>O(1)</td><td>O(1)</td><td>key lookup</td></tr>
+    <tr><td>TreeMap</td><td>O(log n)</td><td>O(log n)</td><td>sorted keys</td></tr></table>`,
+    articles:[A("Baeldung: Java Collections Guide","https://www.baeldung.com/java-collections"),A("Oracle: Collections Framework","https://docs.oracle.com/javase/tutorial/collections/index.html")],
+    videos:[V("Collections Framework — Telusko","https://www.youtube.com/watch?v=GdAon80-0KA"),V("Java Generics — Coding with John","https://www.youtube.com/watch?v=K1iu1kXkVoA")],
+    refs:[A("Big-O cheat sheet","https://www.bigocheatsheet.com/")],
+    lab:"Benchmark ArrayList vs LinkedList for random access and for insertions at the head.",
+    proj:"Build an in-memory transaction ledger using a HashMap<AccountId, List<Transaction>>.",
+    arch:"Diagram how a HashMap resolves collisions (bucket + linked list/tree).",
+    qa:[Q("How does a HashMap work internally?","Keys are hashed to a bucket index; collisions chain in a list that converts to a balanced tree past a threshold (Java 8+) to keep worst-case at O(log n). Load factor triggers resize. I probe this to gauge depth beyond API usage."),Q("When would you choose a TreeMap over HashMap?","When you need keys in sorted order or range queries (headMap/tailMap). It trades O(1) for O(log n) but gives ordering guarantees — e.g., time-ordered transaction lookups.")],
+    rev:["I can pick the right collection","I understand HashMap internals","I used generics to remove casts"]
+  },
+  {
+    t:"Exceptions, Error Handling & Resource Management",
+    obj:["Distinguish checked vs unchecked","Use try-with-resources","Design resilient error handling"],
+    exp:`<p>Java splits <b>checked</b> exceptions (compiler-enforced, recoverable) from <b>unchecked</b> (RuntimeException, programming errors). <b>try-with-resources</b> auto-closes anything implementing <code>AutoCloseable</code>, preventing leaks.</p>
+    <pre><code>try (var conn = pool.get(); var stmt = conn.prepare(sql)) {
+    return stmt.execute();
+} catch (SQLException e) {
+    throw new PaymentException("charge failed", e); // wrap, preserve cause
+}</code></pre>
+    <div class="callout warn"><b>Anti-pattern:</b> swallowing exceptions (empty catch) hides failures. Log with context or rethrow.</div>`,
+    articles:[A("Baeldung: Exception Handling","https://www.baeldung.com/java-exceptions"),A("Oracle: try-with-resources","https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html")],
+    videos:[V("Exception Handling — Java Brains","https://www.youtube.com/watch?v=W-N2ltgU-X4")],
+    refs:[A("Effective Java: Exceptions","https://github.com/HugoMatilla/Effective-JAVA-Summary#9-exceptions")],
+    lab:"Rewrite a leaky JDBC snippet to use try-with-resources and a custom domain exception.",
+    proj:"Add robust error handling + retry to the Wallet's transaction path.",
+    arch:"Map an exception-handling strategy: where to catch, wrap, log, and surface to the user.",
+    qa:[Q("Checked vs unchecked — what's your team policy?","I lean toward unchecked for most application errors (cleaner signatures, works with lambdas/streams) and reserve checked for truly recoverable conditions. The key rule I enforce: never swallow; always preserve the cause chain."),Q("How do you design error handling in a payments service?","Fail fast on validation, wrap infrastructure errors in domain exceptions, make operations idempotent, add bounded retries with backoff for transient faults, and ensure every failure is observable (logged + metric).")],
+    rev:["I used try-with-resources","I never swallow exceptions","I wrap with domain exceptions"]
+  },
+  {
+    t:"Week 1 Review, Lab Day & Coding Kata",
+    obj:["Consolidate week-1 concepts","Solve fluency katas","Self-assess readiness"],
+    exp:`<p>Review day. Revisit JVM internals, OOP, collections and exceptions. Spend the session doing <b>deliberate practice</b>: small katas that build fluency, then a slightly larger integrative exercise.</p>
+    <div class="callout tip"><b>Manager tip:</b> Even as a leader, keeping hands-on fluency earns credibility in design reviews and lets you unblock teams.</div>`,
+    articles:[A("Refactoring.Guru: Clean Code basics","https://refactoring.guru/refactoring"),A("Baeldung: Java Streams intro (preview)","https://www.baeldung.com/java-8-streams")],
+    videos:[V("Java Practice Problems — Kunal Kushwaha","https://www.youtube.com/watch?v=rZ41y93P2Qo")],
+    refs:[A("Exercism Java Track","https://exercism.org/tracks/java"),A("LeetCode Easy set","https://leetcode.com/problemset/")],
+    lab:"Solve 5 katas: reverse a string, dedupe a list, group transactions by day, top-k merchants, FizzBuzz with switch.",
+    proj:"Finalize the Wallet mini-app: immutable Money, interface-based processors, robust exceptions, a HashMap ledger.",
+    arch:"Present your Wallet architecture as if to a hiring panel; note trade-offs you made.",
+    qa:[Q("Walk me through a small system you built this week.","I'd describe the Wallet: immutable Money value object to protect invariants, a PaymentProcessor interface for extensibility, a HashMap-backed ledger for O(1) lookups, and domain exceptions with retries. I'd call out trade-offs like in-memory storage being a stand-in for a real datastore."),Q("How do you keep technical depth as a manager?","Time-boxed hands-on katas, reviewing real PRs, and pairing on hard problems. It keeps my judgment sharp without becoming a bottleneck on the critical path.")],
+    rev:["I completed 5 katas","I finished the Wallet app","I can present my design verbally"]
+  }
+]});
+
+/* ---------- WEEK 2 : Advanced Java & Concurrency ---------- */
+WEEKS.push({
+  n:2, title:"Advanced Java & Concurrency", section:"Java",
+  summary:"Streams, lambdas, generics deep dive, threads, executors, and the concurrency reasoning behind reliable services.",
+  days:[
+  {
+    t:"Lambdas & Functional Interfaces",
+    obj:["Write lambdas & method references","Use built-in functional interfaces","Refactor loops to functional style"],
+    exp:`<p>A <b>lambda</b> is an anonymous function; a <b>functional interface</b> has exactly one abstract method (<code>Function</code>, <code>Predicate</code>, <code>Consumer</code>, <code>Supplier</code>). They enable declarative, composable code.</p>
+    <pre><code>Predicate<Transaction> isHighValue = t -> t.amount() > 10_000;
+List<Transaction> flagged = txns.stream().filter(isHighValue).toList();</code></pre>`,
+    articles:[A("Baeldung: Lambda Expressions","https://www.baeldung.com/java-8-lambda-expressions-tips"),A("Oracle: Lambda Expressions","https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html")],
+    videos:[V("Java Lambdas — Coding with John","https://www.youtube.com/watch?v=tj5sLSFjVj4")],
+    refs:[A("java.util.function package","https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/package-summary.html")],
+    lab:"Refactor three imperative loops into Predicate/Function/Consumer lambdas.",
+    proj:"Add a rules engine to the Wallet: a list of Predicate<Transaction> fraud rules evaluated per charge.",
+    arch:"Diagram how a rules pipeline composes predicates.",
+    qa:[Q("What is a functional interface?","An interface with a single abstract method, so it can be the target of a lambda or method reference. @FunctionalInterface enforces this. It underpins Streams and reactive APIs.")],
+    rev:["I wrote a lambda","I used a built-in functional interface","I composed predicates"]
+  },
+  {
+    t:"Streams API & Collectors",
+    obj:["Build stream pipelines","Use map/filter/reduce/collect","Group & aggregate data"],
+    exp:`<p>Streams express data transformations declaratively. They're lazy (nothing runs until a terminal op) and composable.</p>
+    <pre><code>Map<String,Long> perMerchant = txns.stream()
+    .collect(Collectors.groupingBy(Transaction::merchant, Collectors.counting()));</code></pre>
+    <div class="callout warn"><b>Watch:</b> streams aren't always faster than loops; use them for clarity, and parallel streams only for large CPU-bound work.</div>`,
+    articles:[A("Baeldung: Java 8 Streams","https://www.baeldung.com/java-8-streams"),A("Baeldung: Collectors","https://www.baeldung.com/java-8-collectors")],
+    videos:[V("Streams API — Java Brains","https://www.youtube.com/watch?v=t1-YZ6bF-g0")],
+    refs:[A("java.util.stream docs","https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/package-summary.html")],
+    lab:"Compute total volume per merchant and top-3 merchants using groupingBy + sorting.",
+    proj:"Build a reporting module for the Wallet producing daily aggregates via streams.",
+    arch:"Diagram a stream pipeline: source → intermediate ops → terminal op.",
+    qa:[Q("When would you avoid parallel streams?","For small datasets, IO-bound work, or when tasks share mutable state — the fork/join overhead and contention outweigh gains. I benchmark before parallelizing.")],
+    rev:["I built a groupingBy report","I understand laziness","I know when not to parallelize"]
+  },
+  {
+    t:"Threads, Runnable & Thread Lifecycle",
+    obj:["Create and manage threads","Understand thread states","Reason about race conditions"],
+    exp:`<p>A <b>thread</b> is an independent path of execution. Sharing mutable state across threads without coordination causes <b>race conditions</b>. Threads move through NEW → RUNNABLE → BLOCKED/WAITING → TERMINATED.</p>
+    <div class="callout warn"><b>Core problem:</b> two threads incrementing a shared counter can lose updates because <code>count++</code> is read-modify-write, not atomic.</div>`,
+    articles:[A("Baeldung: Java Threads","https://www.baeldung.com/java-thread-lifecycle"),A("Oracle: Concurrency","https://docs.oracle.com/javase/tutorial/essential/concurrency/")],
+    videos:[V("Java Multithreading — Defog Tech","https://www.youtube.com/watch?v=r_MbozD32eo")],
+    refs:[A("Java Concurrency in Practice (summary)","https://jcip.net/")],
+    lab:"Demonstrate a lost-update race with two threads incrementing a shared int, then fix it.",
+    proj:"Add concurrent processing to the Wallet's transaction intake.",
+    arch:"Diagram the thread lifecycle state machine.",
+    qa:[Q("What is a race condition?","When correctness depends on the timing/interleaving of threads accessing shared mutable state. The fix is synchronization, atomics, or immutability. In payments this can mean double-spend, so I treat it as a top risk.")],
+    rev:["I reproduced a race","I know thread states","I fixed the race"]
+  },
+  {
+    t:"Synchronization, Locks & Atomics",
+    obj:["Use synchronized & locks","Apply atomic variables","Prevent deadlocks"],
+    exp:`<p>Coordinate shared state with <code>synchronized</code>, <code>ReentrantLock</code>, or lock-free <code>AtomicLong</code>. <b>Deadlock</b> arises when threads acquire locks in inconsistent order — always lock in a consistent global order.</p>
+    <pre><code>private final AtomicLong balance = new AtomicLong();
+public void credit(long c){ balance.addAndGet(c); } // lock-free, thread-safe</code></pre>`,
+    articles:[A("Baeldung: synchronized","https://www.baeldung.com/java-synchronized"),A("Baeldung: Atomic Variables","https://www.baeldung.com/java-atomic-variables")],
+    videos:[V("Locks & Synchronization — Defog Tech","https://www.youtube.com/watch?v=WH5UvQJizH0")],
+    refs:[A("java.util.concurrent.atomic","https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/atomic/package-summary.html")],
+    lab:"Replace synchronized counter with AtomicLong and benchmark contention.",
+    proj:"Make the Wallet balance updates thread-safe under concurrent charges.",
+    arch:"Draw the four Coffman conditions for deadlock and how to break one.",
+    qa:[Q("How do you prevent deadlocks?","Acquire locks in a consistent global order, use tryLock with timeouts, keep critical sections small, and prefer lock-free atomics or immutable data. I also add deadlock detection in monitoring for long-running services.")],
+    rev:["I used an atomic","I can explain deadlock","I made balance updates safe"]
+  },
+  {
+    t:"Executors, Thread Pools & Futures",
+    obj:["Use ExecutorService","Size thread pools","Compose async with CompletableFuture"],
+    exp:`<p>Don't create raw threads in production — use <b>thread pools</b> via <code>ExecutorService</code> to bound resources. <b>CompletableFuture</b> composes async pipelines without blocking.</p>
+    <pre><code>ExecutorService pool = Executors.newFixedThreadPool(8);
+CompletableFuture.supplyAsync(() -> charge(txn), pool)
+    .thenApply(this::notify)
+    .exceptionally(this::handleFailure);</code></pre>`,
+    articles:[A("Baeldung: ExecutorService","https://www.baeldung.com/java-executor-service-tutorial"),A("Baeldung: CompletableFuture","https://www.baeldung.com/java-completablefuture")],
+    videos:[V("Thread Pools — Defog Tech","https://www.youtube.com/watch?v=6Oo-9Cw9v8g")],
+    refs:[A("java.util.concurrent","https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/package-summary.html")],
+    lab:"Process 1000 mock charges through a fixed pool and aggregate results with CompletableFuture.allOf.",
+    proj:"Convert the Wallet intake to an async pipeline with a bounded pool.",
+    arch:"Diagram a producer → pool → aggregator async flow.",
+    qa:[Q("How do you size a thread pool?","For CPU-bound work, ~#cores; for IO-bound, higher (cores × (1 + wait/compute)). I load-test to tune and always bound the queue to avoid memory blowups under backpressure.")],
+    rev:["I used an ExecutorService","I composed a CompletableFuture","I can size a pool"]
+  },
+  {
+    t:"Java Memory Model, GC & Performance",
+    obj:["Understand heap/stack & GC","Read GC logs","Diagnose memory leaks"],
+    exp:`<p>Objects live on the <b>heap</b> (young + old generations); locals/refs on the <b>stack</b>. GC reclaims unreachable objects. Modern collectors (<b>G1</b>, <b>ZGC</b>) minimize pause times. Leaks in Java are usually <b>unintentional references</b> (static maps, listeners) that keep objects reachable.</p>
+    <div class="callout tip"><b>Manager lens:</b> "OutOfMemoryError in prod" usually means a reference leak or undersized heap — knowing GC lets you guide the investigation.</div>`,
+    articles:[A("Baeldung: JVM Garbage Collectors","https://www.baeldung.com/jvm-garbage-collectors"),A("Oracle: GC Tuning","https://docs.oracle.com/en/java/javase/17/gctuning/introduction-garbage-collection-tuning.html")],
+    videos:[V("JVM Memory & GC — Java Brains","https://www.youtube.com/watch?v=Una_kFXjt2A")],
+    refs:[A("ZGC docs","https://wiki.openjdk.org/display/zgc/Main")],
+    lab:"Run an app with -Xlog:gc and interpret young vs full GC events.",
+    proj:"Add a metrics endpoint to the Wallet exposing heap usage and GC counts.",
+    arch:"Diagram heap generations and object promotion.",
+    qa:[Q("How would you approach an OutOfMemoryError in production?","Capture a heap dump, analyze dominators (e.g., with MAT), look for growing collections or leaked listeners, check heap sizing and GC logs, and correlate with a recent deploy. I'd stabilize with a rollback/heap bump, then fix the leak.")],
+    rev:["I read a GC log","I understand generations","I can explain a leak cause"]
+  },
+  {
+    t:"Week 2 Review & Concurrency Project",
+    obj:["Consolidate concurrency","Ship a thread-safe module","Self-assess"],
+    exp:`<p>Integrate the week: build a small concurrent transaction processor that is correct under load, using immutability, atomics/locks where needed, a bounded pool, and streams for reporting.</p>`,
+    articles:[A("Java Concurrency in Practice — notes","https://jcip.net/")],
+    videos:[V("Concurrency Full Course — Defog Tech playlist","https://www.youtube.com/playlist?list=PLhfHPmPYPPRk6yMrcbfafFGSbE2EPK_A6")],
+    refs:[A("Doug Lea's concurrency papers","https://gee.cs.oswego.edu/dl/")],
+    lab:"Stress-test your processor with 10k concurrent charges; assert no lost updates.",
+    proj:"Deliver a thread-safe, async Wallet processor with a streaming report.",
+    arch:"Present the concurrency design and its failure modes.",
+    qa:[Q("Design a thread-safe counter service handling millions of ops.","Use sharded AtomicLongs (striped counters) to reduce contention, sum on read; or LongAdder which does exactly this. Bound the executor, apply backpressure, and make writes idempotent. I'd validate with load tests before claiming a number.")],
+    rev:["No lost updates under load","I used a bounded pool","I can present failure modes"]
+  }
+]});
+
+/* ---------- WEEK 3 : Spring Boot & Spring Ecosystem ---------- */
+WEEKS.push({
+  n:3, title:"Spring Boot & Spring Ecosystem", section:"Spring Boot",
+  summary:"Dependency injection, REST APIs, configuration, Spring Security and validation — the backbone of enterprise Java services.",
+  days:[
+  {
+    t:"Spring Core: IoC & Dependency Injection",
+    obj:["Explain Inversion of Control","Wire beans via constructor injection","Understand the application context"],
+    exp:`<p>Spring's core idea is <b>Inversion of Control</b>: instead of objects creating their dependencies, the container creates and injects them. This decouples components and makes them testable.</p>
+    <pre><code>@Service
+class PaymentService {
+    private final PaymentProcessor processor;   // injected
+    PaymentService(PaymentProcessor p){ this.processor = p; }
+}</code></pre>
+    <div class="callout tip"><b>Manager lens:</b> DI is why Spring codebases are so testable — you can inject mocks. Prefer constructor injection for immutability and clear dependencies.</div>`,
+    articles:[A("Baeldung: Spring IoC & DI","https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring"),A("Spring: Core Technologies","https://docs.spring.io/spring-framework/reference/core.html")],
+    videos:[V("Spring in 100 min — Amigoscode","https://www.youtube.com/watch?v=9SGDpanrc8U"),V("Spring Boot Tutorial — Java Brains","https://www.youtube.com/watch?v=msXL2oDexqw")],
+    refs:[A("Spring Framework docs","https://docs.spring.io/spring-framework/reference/")],
+    lab:"Create a Spring Boot app; define a service + repository with constructor injection.",
+    proj:"Bootstrap a 'Payments API' Spring Boot project with layered structure (controller/service/repo).",
+    arch:"Diagram the Spring container wiring beans at startup.",
+    qa:[Q("Why is constructor injection preferred over field injection?","It makes dependencies explicit and final (immutable), enables easy unit testing without reflection, and fails fast if a dependency is missing. I standardize on it across teams for clarity and testability.")],
+    rev:["I used constructor injection","I understand IoC","I structured layers"]
+  },
+  {
+    t:"Building REST APIs with Spring Boot",
+    obj:["Design REST endpoints","Map DTOs & status codes","Handle requests/responses cleanly"],
+    exp:`<p>Spring MVC maps HTTP to methods with <code>@RestController</code>. Use <b>DTOs</b> to decouple API from domain, return proper status codes, and keep controllers thin.</p>
+    <pre><code>@PostMapping("/charges")
+ResponseEntity<ChargeResponse> charge(@Valid @RequestBody ChargeRequest req){
+    var result = service.charge(req.toDomain());
+    return ResponseEntity.status(201).body(ChargeResponse.from(result));
+}</code></pre>`,
+    articles:[A("Baeldung: Spring REST","https://www.baeldung.com/rest-with-spring-series"),A("Richardson Maturity Model","https://martinfowler.com/articles/richardsonMaturityModel.html")],
+    videos:[V("Build REST API — Amigoscode","https://www.youtube.com/watch?v=Nv2DERaMx-4")],
+    refs:[A("Spring Web docs","https://docs.spring.io/spring-framework/reference/web/webmvc.html")],
+    lab:"Expose POST /charges and GET /charges/{id} with proper DTOs and status codes.",
+    proj:"Build the Payments API CRUD with DTO mapping and validation.",
+    arch:"Diagram request flow: filter → controller → service → repo → response.",
+    qa:[Q("How do you design a good REST API?","Resource-oriented URIs, correct HTTP verbs/status codes, DTOs separate from domain, versioning, idempotency for writes (esp. payments), pagination, and consistent error envelopes. I document with OpenAPI so teams integrate quickly.")],
+    rev:["I built REST endpoints","I used DTOs","I returned correct status codes"]
+  },
+  {
+    t:"Configuration, Profiles & Actuator",
+    obj:["Externalize configuration","Use profiles per environment","Expose health & metrics"],
+    exp:`<p>Twelve-factor apps externalize config. Spring Boot supports <code>application.yml</code>, environment variables, and <b>profiles</b> (dev/stage/prod). <b>Actuator</b> exposes health, metrics, and info endpoints for observability.</p>`,
+    articles:[A("Baeldung: Spring Profiles","https://www.baeldung.com/spring-profiles"),A("Baeldung: Actuator","https://www.baeldung.com/spring-boot-actuators")],
+    videos:[V("Spring Profiles — Dan Vega","https://www.youtube.com/watch?v=PxWLC7yFxjE")],
+    refs:[A("Spring Boot config docs","https://docs.spring.io/spring-boot/reference/features/external-config.html")],
+    lab:"Configure dev/prod profiles and enable Actuator health + Prometheus metrics.",
+    proj:"Add environment-specific config and health checks to the Payments API.",
+    arch:"Diagram config resolution order (env > profile > default).",
+    qa:[Q("How do you manage secrets and config across environments?","Externalize via env vars / a secrets manager (Vault, AWS Secrets Manager), never commit secrets, use profiles for env differences, and expose health/readiness for orchestration. I audit for leaked secrets in CI.")],
+    rev:["I used profiles","I enabled Actuator","I externalized config"]
+  },
+  {
+    t:"Validation, Exception Handling & API Errors",
+    obj:["Validate input with Bean Validation","Centralize error handling","Return consistent error responses"],
+    exp:`<p>Use <code>@Valid</code> + annotations (<code>@NotNull</code>, <code>@Positive</code>) for input validation and a <code>@RestControllerAdvice</code> for centralized, consistent error responses.</p>
+    <pre><code>@RestControllerAdvice
+class ApiErrors {
+  @ExceptionHandler(PaymentException.class)
+  ResponseEntity<ApiError> handle(PaymentException e){ return ResponseEntity.status(402).body(ApiError.of(e)); }
+}</code></pre>`,
+    articles:[A("Baeldung: Bean Validation","https://www.baeldung.com/spring-boot-bean-validation"),A("Baeldung: Error Handling for REST","https://www.baeldung.com/exception-handling-for-rest-with-spring")],
+    videos:[V("Validation in Spring Boot — Amigoscode","https://www.youtube.com/watch?v=cPPnBTUj1zM")],
+    refs:[A("RFC 7807 Problem Details","https://datatracker.ietf.org/doc/html/rfc7807")],
+    lab:"Add validation to ChargeRequest and a global error handler returning RFC-7807 style errors.",
+    proj:"Harden the Payments API with validation + consistent error envelope.",
+    arch:"Diagram how an exception becomes a structured HTTP error.",
+    qa:[Q("How do you standardize error handling across many services?","A shared error envelope (RFC 7807), centralized @ControllerAdvice, consistent codes, correlation IDs, and no leaking of internals/stack traces. I put this in a shared starter library so all teams get it for free.")],
+    rev:["I validated input","I centralized errors","I returned consistent errors"]
+  },
+  {
+    t:"Spring Security: AuthN & AuthZ",
+    obj:["Configure security filter chain","Understand authentication vs authorization","Secure endpoints by role"],
+    exp:`<p><b>Authentication</b> = who you are; <b>authorization</b> = what you can do. Spring Security uses a filter chain to enforce both. Secure endpoints with method/URL rules and roles.</p>`,
+    articles:[A("Baeldung: Spring Security","https://www.baeldung.com/security-spring"),A("Spring Security docs","https://docs.spring.io/spring-security/reference/")],
+    videos:[V("Spring Security — Amigoscode","https://www.youtube.com/watch?v=her_7pa0vrg")],
+    refs:[A("OWASP Auth Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html")],
+    lab:"Secure the Payments API so only ROLE_ADMIN can view all charges.",
+    proj:"Add role-based access control to the Payments API.",
+    arch:"Diagram the Spring Security filter chain.",
+    qa:[Q("Explain authentication vs authorization with an example.","Authentication verifies identity (login, token validation); authorization decides permissions (can this user refund a charge?). In payments both must be airtight — I ensure least-privilege roles and audit logging of sensitive actions.")],
+    rev:["I secured endpoints","I set up roles","I know authN vs authZ"]
+  },
+  {
+    t:"JWT, OAuth2 & Stateless Security",
+    obj:["Issue & validate JWTs","Understand OAuth2 flows","Design stateless auth for microservices"],
+    exp:`<p><b>JWT</b> carries signed claims so services can validate tokens without shared session state — ideal for microservices. <b>OAuth2/OIDC</b> standardizes delegated authorization. Always validate signature, expiry, issuer, and audience.</p>`,
+    articles:[A("Baeldung: JWT with Spring Security","https://www.baeldung.com/spring-security-oauth-jwt"),A("jwt.io Introduction","https://jwt.io/introduction")],
+    videos:[V("JWT Auth — Amigoscode","https://www.youtube.com/watch?v=KxqlJblhzfI")],
+    refs:[A("OAuth 2.0 spec","https://oauth.net/2/"),A("OIDC","https://openid.net/developers/how-connect-works/")],
+    lab:"Add JWT-based stateless auth; protect endpoints and validate token claims.",
+    proj:"Convert the Payments API to stateless JWT auth.",
+    arch:"Diagram an OAuth2 authorization-code flow.",
+    qa:[Q("Why JWT for microservices, and what are the risks?","Stateless validation avoids a central session store and scales horizontally. Risks: token theft (use short expiry + HTTPS), no easy revocation (use short-lived tokens + refresh, or a denylist), and oversized tokens. I weigh these per security requirement.")],
+    rev:["I issued a JWT","I validated claims","I understand OAuth2 flow"]
+  },
+  {
+    t:"Week 3 Review & Secured API Project",
+    obj:["Integrate Spring skills","Ship a secured API","Self-assess"],
+    exp:`<p>Deliver a production-shaped Payments API: layered, validated, observable (Actuator), and secured with JWT + roles.</p>`,
+    articles:[A("Spring Boot Best Practices","https://www.baeldung.com/spring-boot-best-practices")],
+    videos:[V("Full Spring Boot Course — Amigoscode","https://www.youtube.com/watch?v=9SGDpanrc8U")],
+    refs:[A("Spring Guides","https://spring.io/guides")],
+    lab:"End-to-end test the secured API: auth, validation, error handling, health.",
+    proj:"Finalize and document the Payments API with an OpenAPI spec.",
+    arch:"Present the API architecture and security model to a mock panel.",
+    qa:[Q("Walk through your Spring Boot service architecture.","Layered controller/service/repository, DTOs at the edge, constructor DI, Bean Validation, centralized error handling, externalized config with profiles, Actuator for health/metrics, and stateless JWT auth with RBAC. I'd note observability and idempotency as production must-haves.")],
+    rev:["API is secured","Docs/OpenAPI done","I can present it"]
+  }
+]});
+
+/* ---------- WEEK 4 : Data Layer — SQL, JPA/Hibernate, Performance ---------- */
+WEEKS.push({
+  n:4, title:"Data Layer: SQL, JPA/Hibernate & Performance", section:"SQL & Performance",
+  summary:"Relational modeling, SQL mastery, ORM with JPA/Hibernate, indexing and query performance tuning.",
+  days:[
+  {
+    t:"Relational Modeling & Normalization",
+    obj:["Design normalized schemas","Model relationships & keys","Know when to denormalize"],
+    exp:`<p>Normalization (1NF→3NF) removes redundancy and update anomalies. Model entities, primary/foreign keys, and relationships. <b>Denormalize</b> deliberately for read performance when justified by metrics.</p>`,
+    articles:[A("Normalization explained","https://www.baeldung.com/cs/db-normalization"),A("Database design basics","https://www.postgresql.org/docs/current/ddl.html")],
+    videos:[V("Database Design Course — freeCodeCamp","https://www.youtube.com/watch?v=ztHopE5Wnpc")],
+    refs:[A("PostgreSQL docs","https://www.postgresql.org/docs/")],
+    lab:"Design a normalized schema for accounts, transactions, merchants with keys and constraints.",
+    proj:"Create the payments schema with DDL and referential integrity.",
+    arch:"Draw an ER diagram of the payments domain.",
+    qa:[Q("When would you denormalize?","When read patterns dominate and joins become a proven bottleneck — I'd add derived/duplicated columns or materialized views, but only after measuring, and I keep the source of truth normalized to protect integrity.")],
+    rev:["I normalized a schema","I set constraints","I can defend denormalization"]
+  },
+  {
+    t:"SQL Mastery: Joins, Aggregation, Subqueries",
+    obj:["Write complex joins","Aggregate with GROUP BY/HAVING","Use subqueries & CTEs"],
+    exp:`<p>Master JOIN types, aggregation, window functions and CTEs. Window functions (<code>ROW_NUMBER, SUM() OVER</code>) solve ranking and running totals elegantly.</p>
+    <pre><code>SELECT merchant_id, SUM(amount) OVER (PARTITION BY merchant_id) AS total
+FROM transactions;</code></pre>`,
+    articles:[A("Mode SQL Tutorial","https://mode.com/sql-tutorial/"),A("Window functions","https://www.postgresql.org/docs/current/tutorial-window.html")],
+    videos:[V("SQL Full Course — freeCodeCamp","https://www.youtube.com/watch?v=HXV3zeQKqGY")],
+    refs:[A("SQL reference","https://www.postgresql.org/docs/current/sql.html")],
+    lab:"Write queries: top merchants by volume, daily running totals, and duplicate detection.",
+    proj:"Build a reporting SQL suite for the payments schema.",
+    arch:"Diagram how a JOIN combines rows across tables.",
+    qa:[Q("What's the difference between WHERE and HAVING?","WHERE filters rows before aggregation; HAVING filters groups after aggregation. Misusing them causes wrong results or full scans — a common review catch.")],
+    rev:["I wrote window functions","I used CTEs","I mastered join types"]
+  },
+  {
+    t:"JPA & Hibernate Fundamentals",
+    obj:["Map entities with JPA","Understand the persistence context","Manage relationships"],
+    exp:`<p>JPA maps objects to tables; Hibernate is the common implementation. Understand the <b>persistence context</b> (first-level cache), entity lifecycle (transient/managed/detached), and relationship mappings (<code>@OneToMany</code>, <code>@ManyToOne</code>).</p>`,
+    articles:[A("Baeldung: JPA/Hibernate","https://www.baeldung.com/learn-jpa-hibernate"),A("Hibernate ORM docs","https://hibernate.org/orm/documentation/")],
+    videos:[V("Spring Data JPA — Amigoscode","https://www.youtube.com/watch?v=8SGI_XS5OPw")],
+    refs:[A("Jakarta Persistence spec","https://jakarta.ee/specifications/persistence/")],
+    lab:"Map Account↔Transaction with JPA and persist via Spring Data repositories.",
+    proj:"Replace the in-memory ledger with JPA persistence.",
+    arch:"Diagram the entity lifecycle states and transitions.",
+    qa:[Q("What is the persistence context?","A first-level cache tied to a transaction that tracks managed entities and flushes changes automatically (dirty checking). Understanding it prevents surprises like stale reads or unexpected updates — key when mentoring teams on ORM.")],
+    rev:["I mapped entities","I used a repository","I understand the context"]
+  },
+  {
+    t:"N+1 Problem, Fetching & Caching",
+    obj:["Detect & fix N+1 queries","Choose lazy vs eager","Apply second-level caching"],
+    exp:`<p>The infamous <b>N+1</b> problem: loading N parents then one query per child. Fix with <code>JOIN FETCH</code>, entity graphs, or batch fetching. Use lazy loading by default; add caching where read-heavy.</p>
+    <div class="callout warn"><b>Watch:</b> N+1 is the #1 ORM performance bug in production — enable SQL logging to catch it early.</div>`,
+    articles:[A("Baeldung: N+1 problem","https://www.baeldung.com/spring-hibernate-n1-problem"),A("Vlad Mihalcea: Fetching","https://vladmihalcea.com/tutorials/hibernate/")],
+    videos:[V("Hibernate Performance Tuning — Vlad Mihalcea","https://www.youtube.com/results?search_query=vlad+mihalcea+hibernate+performance+tuning")],
+    refs:[A("Hibernate caching docs","https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#caching")],
+    lab:"Reproduce an N+1 with lazy associations, then fix with JOIN FETCH; compare query counts.",
+    proj:"Optimize the JPA reporting queries to eliminate N+1.",
+    arch:"Diagram lazy vs eager fetch and where caching helps.",
+    qa:[Q("How do you find and fix an N+1 problem?","Enable SQL logging or use an APM to spot the query storm, then batch or JOIN FETCH the association, or use an entity graph. I add integration tests asserting query counts so regressions are caught in CI.")],
+    rev:["I reproduced N+1","I fixed it","I know lazy vs eager"]
+  },
+  {
+    t:"Indexing & Query Optimization",
+    obj:["Design effective indexes","Read execution plans","Avoid full scans"],
+    exp:`<p>Indexes turn O(n) scans into O(log n) lookups but cost write throughput and storage. Use <code>EXPLAIN ANALYZE</code> to read query plans; index columns used in WHERE/JOIN/ORDER BY. Composite index column order matters.</p>`,
+    articles:[A("Use The Index, Luke!","https://use-the-index-luke.com/"),A("PostgreSQL EXPLAIN","https://www.postgresql.org/docs/current/using-explain.html")],
+    videos:[V("Database Indexing — Hussein Nasser","https://www.youtube.com/watch?v=-qNSXK7s7_w")],
+    refs:[A("Index types (Postgres)","https://www.postgresql.org/docs/current/indexes-types.html")],
+    lab:"Add indexes to slow queries and compare EXPLAIN plans before/after.",
+    proj:"Tune the payments reporting queries with appropriate indexes.",
+    arch:"Diagram a B-tree index lookup.",
+    qa:[Q("How do you decide what to index?","Index high-selectivity columns used in filters/joins/sorts, consider composite indexes matching query order, and balance read gains against write cost. I validate with EXPLAIN ANALYZE and real query patterns, not guesses.")],
+    rev:["I read a query plan","I added an index","I measured improvement"]
+  },
+  {
+    t:"Transactions, Isolation & Concurrency Control",
+    obj:["Apply ACID & isolation levels","Prevent lost updates","Use optimistic vs pessimistic locking"],
+    exp:`<p><b>ACID</b> guarantees reliable transactions. Isolation levels (Read Committed → Serializable) trade consistency for concurrency. In payments, prevent double-spend with optimistic (<code>@Version</code>) or pessimistic locking and idempotency keys.</p>`,
+    articles:[A("Baeldung: Transaction Isolation","https://www.baeldung.com/spring-transactional-propagation-isolation"),A("Postgres MVCC","https://www.postgresql.org/docs/current/mvcc.html")],
+    videos:[V("ACID & Isolation — Hussein Nasser","https://www.youtube.com/watch?v=pomxJOFVcQs")],
+    refs:[A("Spring @Transactional","https://docs.spring.io/spring-framework/reference/data-access/transaction.html")],
+    lab:"Demonstrate a lost update at Read Committed, then fix with optimistic locking.",
+    proj:"Make the payments write path transactional and idempotent.",
+    arch:"Diagram optimistic locking with a version column.",
+    qa:[Q("How do you prevent double-charging a customer?","Idempotency keys on the request, a unique constraint on the operation, transactional writes, and optimistic locking on the balance. On retry we return the original result instead of charging again — a hard requirement in payments.")],
+    rev:["I know isolation levels","I used optimistic locking","I made writes idempotent"]
+  },
+  {
+    t:"Week 4 Review & Data Project",
+    obj:["Integrate data-layer skills","Ship a persistent, tuned API","Self-assess"],
+    exp:`<p>Deliver the Payments API backed by a normalized schema, JPA persistence, tuned queries, and safe transactional writes.</p>`,
+    articles:[A("High Performance Java Persistence — notes","https://vladmihalcea.com/books/high-performance-java-persistence/")],
+    videos:[V("Spring Data JPA Full — Amigoscode","https://www.youtube.com/watch?v=8SGI_XS5OPw")],
+    refs:[A("Vlad Mihalcea blog","https://vladmihalcea.com/")],
+    lab:"Load-test the persistent API and verify no N+1 and correct locking under contention.",
+    proj:"Finalize the persistence layer with migrations (Flyway) and query tests.",
+    arch:"Present the data model and performance decisions.",
+    qa:[Q("How do you keep a growing database performant?","Right-size indexes, watch slow-query logs, use connection pooling, partition/archival for large tables, caching for hot reads, and capacity planning. I make DB performance a tracked SLO, not an afterthought.")],
+    rev:["Persistence complete","Queries tuned","Migrations in place"]
+  }
+]});
+
+/* ---------- WEEK 5 : Microservices Architecture ---------- */
+WEEKS.push({
+  n:5, title:"Microservices Architecture", section:"Microservices",
+  summary:"Decomposition, inter-service communication, resilience patterns, API gateways and distributed data.",
+  days:[
+  {
+    t:"Monolith vs Microservices & Decomposition",
+    obj:["Weigh monolith vs microservices","Decompose by bounded context","Avoid distributed-monolith traps"],
+    exp:`<p>Microservices split a system into independently deployable services aligned to <b>bounded contexts</b> (DDD). They enable team autonomy and independent scaling — but add distributed-systems complexity. Start monolith-first; split when scaling/team boundaries demand it.</p>
+    <div class="callout warn"><b>Anti-pattern:</b> a "distributed monolith" — services that must deploy together — combines the worst of both.</div>`,
+    articles:[A("Martin Fowler: Microservices","https://martinfowler.com/articles/microservices.html"),A("MonolithFirst","https://martinfowler.com/bliki/MonolithFirst.html")],
+    videos:[V("Microservices Explained — TechWorld with Nana","https://www.youtube.com/watch?v=rv4LlmLmVWk")],
+    refs:[A("microservices.io patterns","https://microservices.io/")],
+    lab:"Identify bounded contexts in the payments domain and propose service boundaries.",
+    proj:"Split the Payments API into 'charges' and 'accounts' services.",
+    arch:"Draw a context map of the payments services.",
+    qa:[Q("When should a team NOT adopt microservices?","When the domain is small, the team is small, boundaries are unclear, or operational maturity (CI/CD, observability) is lacking — the overhead outweighs benefits. I'd recommend a modular monolith first and split along proven seams.")],
+    rev:["I found bounded contexts","I know the distributed-monolith trap","I can justify splitting"]
+  },
+  {
+    t:"Inter-Service Communication: REST, gRPC, Async",
+    obj:["Choose sync vs async","Compare REST & gRPC","Design for loose coupling"],
+    exp:`<p>Services communicate synchronously (REST/gRPC) or asynchronously (events/messaging). Async decouples and improves resilience; sync is simpler but couples availability. gRPC offers efficient, typed contracts for internal calls.</p>`,
+    articles:[A("Baeldung: gRPC","https://www.baeldung.com/grpc-introduction"),A("REST vs gRPC","https://grpc.io/docs/what-is-grpc/introduction/")],
+    videos:[V("gRPC vs REST — Hussein Nasser","https://www.youtube.com/results?search_query=grpc+vs+rest+hussein+nasser")],
+    refs:[A("gRPC docs","https://grpc.io/docs/")],
+    lab:"Call the accounts service from charges via REST, then discuss where async would be better.",
+    proj:"Introduce an event for 'ChargeCompleted' between services.",
+    arch:"Diagram sync vs async communication trade-offs.",
+    qa:[Q("Sync vs async communication — how do you choose?","Sync for immediate consistency needs and simple request/response; async for decoupling, resilience, and load leveling. In payments I use sync for authorization but async events for downstream notifications and analytics.")],
+    rev:["I compared REST/gRPC","I added an event","I know coupling trade-offs"]
+  },
+  {
+    t:"API Gateway & Service Discovery",
+    obj:["Use an API gateway","Understand service discovery","Centralize cross-cutting concerns"],
+    exp:`<p>An <b>API gateway</b> is the single entry point handling routing, auth, rate limiting, and aggregation. <b>Service discovery</b> lets services find each other dynamically (client-side or via the platform, e.g., Kubernetes DNS).</p>`,
+    articles:[A("Gateway pattern","https://microservices.io/patterns/apigateway.html"),A("Spring Cloud Gateway","https://spring.io/projects/spring-cloud-gateway")],
+    videos:[V("API Gateway — TechWorld with Nana","https://www.youtube.com/watch?v=6ULyxuHKxg8")],
+    refs:[A("Service discovery pattern","https://microservices.io/patterns/service-registry.html")],
+    lab:"Front both services with an API gateway handling auth and routing.",
+    proj:"Add a gateway with rate limiting to the payments services.",
+    arch:"Diagram gateway + discovery topology.",
+    qa:[Q("What belongs at the gateway vs the service?","Cross-cutting concerns — auth, rate limiting, routing, TLS termination, request aggregation — at the gateway; business logic stays in services. I avoid putting domain logic in the gateway to prevent a new bottleneck/monolith.")],
+    rev:["I used a gateway","I understand discovery","I centralized cross-cutting concerns"]
+  },
+  {
+    t:"Resilience: Circuit Breaker, Retry, Bulkhead",
+    obj:["Apply resilience patterns","Use Resilience4j","Degrade gracefully"],
+    exp:`<p>In distributed systems failures are normal. <b>Circuit breakers</b> stop cascading failures, <b>retries with backoff</b> handle transient faults, <b>bulkheads</b> isolate resources, and <b>timeouts</b> prevent hanging. Resilience4j implements these.</p>`,
+    articles:[A("Resilience4j docs","https://resilience4j.readme.io/"),A("Circuit Breaker — Fowler","https://martinfowler.com/bliki/CircuitBreaker.html")],
+    videos:[V("Resilience patterns — Java Techie","https://www.youtube.com/watch?v=uk3WHb2ghjU")],
+    refs:[A("Release It! patterns","https://pragprog.com/titles/mnee2/release-it-second-edition/")],
+    lab:"Wrap the inter-service call with a circuit breaker + retry + timeout.",
+    proj:"Make the charges→accounts call resilient with graceful fallback.",
+    arch:"Diagram circuit breaker states (closed/open/half-open).",
+    qa:[Q("How do you keep a system resilient when a dependency fails?","Timeouts + retries with jittered backoff for transient faults, circuit breakers to stop cascades, bulkheads to isolate, and graceful degradation/fallbacks. I also design for idempotency so retries are safe — essential in payments.")],
+    rev:["I added a circuit breaker","I set timeouts","I designed a fallback"]
+  },
+  {
+    t:"Distributed Data: Saga & Eventual Consistency",
+    obj:["Manage data across services","Implement the Saga pattern","Reason about consistency"],
+    exp:`<p>Each service owns its data — no shared database. Cross-service transactions use the <b>Saga</b> pattern (choreography or orchestration) with compensating actions, accepting <b>eventual consistency</b>.</p>`,
+    articles:[A("Saga pattern","https://microservices.io/patterns/data/saga.html"),A("Database per service","https://microservices.io/patterns/data/database-per-service.html")],
+    videos:[V("Saga Pattern — Java Techie","https://www.youtube.com/watch?v=xDuwrtwYHu8")],
+    refs:[A("Designing Data-Intensive Applications","https://dataintensive.net/")],
+    lab:"Model a payment saga: reserve funds → charge → confirm, with compensations.",
+    proj:"Implement an orchestrated saga for a multi-step payment.",
+    arch:"Diagram a saga with compensating transactions.",
+    qa:[Q("How do you handle a transaction spanning multiple services?","With a saga: a sequence of local transactions plus compensating actions on failure, coordinated by orchestration or choreography. I accept eventual consistency and design idempotent, reversible steps — a distributed 2PC is usually too costly/fragile.")],
+    rev:["I modeled a saga","I designed compensations","I understand eventual consistency"]
+  },
+  {
+    t:"Observability: Logging, Tracing, Metrics",
+    obj:["Correlate logs across services","Add distributed tracing","Define golden-signal metrics"],
+    exp:`<p>The three pillars: <b>logs</b> (with correlation IDs), <b>metrics</b> (latency, traffic, errors, saturation), and <b>traces</b> (request flow across services via OpenTelemetry). Observability is how you debug distributed systems.</p>`,
+    articles:[A("OpenTelemetry docs","https://opentelemetry.io/docs/"),A("Google SRE: Golden Signals","https://sre.google/sre-book/monitoring-distributed-systems/")],
+    videos:[V("Distributed Tracing — TechWorld with Nana","https://www.youtube.com/watch?v=idDu_jXqf4E")],
+    refs:[A("Micrometer","https://micrometer.io/")],
+    lab:"Add correlation IDs and distributed tracing across the two services.",
+    proj:"Instrument the payments services with metrics + tracing.",
+    arch:"Diagram a trace spanning gateway → charges → accounts.",
+    qa:[Q("How do you debug a slow request across many microservices?","Distributed tracing to find the slow span, correlated logs via a trace/correlation ID, and metrics dashboards for the golden signals. Without tracing you're guessing — so I make it a platform default for every service.")],
+    rev:["I added correlation IDs","I set up tracing","I defined golden signals"]
+  },
+  {
+    t:"Week 5 Review & Microservices Project",
+    obj:["Integrate microservices skills","Ship a resilient multi-service system","Self-assess"],
+    exp:`<p>Deliver a resilient two-service payments system: gateway, resilient calls, a saga, and full observability.</p>`,
+    articles:[A("microservices.io pattern language","https://microservices.io/patterns/index.html")],
+    videos:[V("Microservices Full Course — Amigoscode","https://www.youtube.com/watch?v=lTAcCNbJ7KE")],
+    refs:[A("Building Microservices (Newman)","https://samnewman.io/books/building_microservices_2nd_edition/")],
+    lab:"Chaos-test: kill a service and verify graceful degradation.",
+    proj:"Finalize the multi-service payments system with docs.",
+    arch:"Present the full microservices architecture to a mock panel.",
+    qa:[Q("Design a payment processing system at scale.","Bounded-context services, an API gateway, async events for decoupling, sagas for consistency, resilience patterns everywhere, idempotency, database-per-service, and end-to-end observability. I'd anchor design in SLAs, security (PCI), and failure modes rather than tech for its own sake.")],
+    rev:["System is resilient","Saga works","Observability complete"]
+  }
+]});
+
+/* ---------- WEEK 6 : Messaging & Kafka (Event-Driven) ---------- */
+WEEKS.push({
+  n:6, title:"Messaging & Kafka: Event-Driven Systems", section:"Kafka",
+  summary:"Message brokers, Apache Kafka architecture, event-driven design, streams, and exactly-once semantics.",
+  days:[
+  {
+    t:"Messaging Fundamentals & When to Use It",
+    obj:["Compare queues vs pub/sub","Understand async messaging benefits","Know delivery guarantees"],
+    exp:`<p>Messaging decouples producers from consumers, enabling resilience, load leveling, and scalability. <b>Queues</b> (point-to-point) vs <b>pub/sub</b> (broadcast). Delivery guarantees: at-most-once, at-least-once, exactly-once.</p>`,
+    articles:[A("Enterprise Integration Patterns","https://www.enterpriseintegrationpatterns.com/"),A("Messaging basics","https://www.confluent.io/learn/message-queue/")],
+    videos:[V("Message Queues — Hussein Nasser","https://www.youtube.com/watch?v=oUJbuFMyBDk")],
+    refs:[A("Kafka intro","https://kafka.apache.org/intro")],
+    lab:"Map which payment flows should be async vs sync and why.",
+    proj:"Design the event model for the payments platform.",
+    arch:"Diagram queue vs pub/sub topologies.",
+    qa:[Q("Why introduce a message broker?","To decouple services, absorb load spikes (buffering/backpressure), improve resilience (consumers can be down and catch up), and enable event-driven scaling. The trade-off is added operational and consistency complexity, which I weigh explicitly.")],
+    rev:["I know queue vs pub/sub","I understand delivery guarantees","I mapped async flows"]
+  },
+  {
+    t:"Kafka Architecture: Topics, Partitions, Brokers",
+    obj:["Explain Kafka's core model","Understand partitions & offsets","Reason about ordering & scaling"],
+    exp:`<p>Kafka is a distributed, durable log. Producers write to <b>topics</b> split into <b>partitions</b> across <b>brokers</b>; consumers read by <b>offset</b>. Ordering is guaranteed per partition. Partition count sets parallelism.</p>`,
+    articles:[A("Kafka design","https://kafka.apache.org/documentation/#design"),A("Confluent: Kafka 101","https://developer.confluent.io/courses/apache-kafka/events/")],
+    videos:[V("Apache Kafka in 6 min — Hussein Nasser","https://www.youtube.com/watch?v=Ch5VhJzaoaI")],
+    refs:[A("Kafka documentation","https://kafka.apache.org/documentation/")],
+    lab:"Run Kafka locally; create a topic with 3 partitions and observe offset progression.",
+    proj:"Publish 'ChargeCompleted' events to a Kafka topic.",
+    arch:"Diagram producers → partitions → consumer groups.",
+    qa:[Q("How does Kafka scale and guarantee ordering?","Partitions provide parallelism and per-partition ordering; a consumer group divides partitions among consumers so each partition has one consumer. To scale you add partitions/consumers, and you choose a partition key (e.g., accountId) to keep related events ordered.")],
+    rev:["I created a topic","I understand partitions/offsets","I know ordering guarantees"]
+  },
+  {
+    t:"Producers, Consumers & Consumer Groups",
+    obj:["Write producers/consumers","Tune acks & delivery","Balance with consumer groups"],
+    exp:`<p>Producers choose <b>acks</b> (0/1/all) trading durability for latency. Consumer groups distribute partitions for horizontal scaling and enable rebalancing. Commit offsets carefully to control delivery semantics.</p>`,
+    articles:[A("Spring for Apache Kafka","https://docs.spring.io/spring-kafka/reference/"),A("Confluent consumer guide","https://developer.confluent.io/courses/apache-kafka/consumers/")],
+    videos:[V("Kafka with Spring Boot — Java Techie","https://www.youtube.com/watch?v=SqVfCyfCJqw")],
+    refs:[A("Kafka producer configs","https://kafka.apache.org/documentation/#producerconfigs")],
+    lab:"Build a Spring Kafka producer and a consumer group with 2 instances.",
+    proj:"Consume ChargeCompleted to update a read model.",
+    arch:"Diagram consumer group rebalancing.",
+    qa:[Q("What does acks=all guarantee and its cost?","The leader waits for all in-sync replicas to persist the record before acknowledging, giving strong durability (no data loss on broker failure) at the cost of higher latency. For payments events I favor acks=all with idempotent producers.")],
+    rev:["I built producer/consumer","I tuned acks","I scaled with a group"]
+  },
+  {
+    t:"Event-Driven Architecture & Event Sourcing",
+    obj:["Design event-driven flows","Understand event sourcing & CQRS","Model events as facts"],
+    exp:`<p><b>Event-driven architecture</b> models the system as reactions to events (facts about what happened). <b>Event sourcing</b> stores state as an append-only event log; <b>CQRS</b> separates write and read models for scalability.</p>`,
+    articles:[A("Event Sourcing — Fowler","https://martinfowler.com/eaaDev/EventSourcing.html"),A("CQRS — Fowler","https://martinfowler.com/bliki/CQRS.html")],
+    videos:[V("Event Driven Architecture — TechWorld with Nana","https://www.youtube.com/watch?v=STKCRSUsyP0")],
+    refs:[A("microservices.io: event sourcing","https://microservices.io/patterns/data/event-sourcing.html")],
+    lab:"Model the payment lifecycle as events and rebuild state by replaying them.",
+    proj:"Add an event-sourced audit log for charges.",
+    arch:"Diagram CQRS write vs read paths.",
+    qa:[Q("What are the benefits and costs of event sourcing?","Benefits: complete audit trail, temporal queries, easy rebuild/replay — excellent for payments compliance. Costs: complexity, eventual consistency, schema evolution of events, and read models to maintain. I adopt it where auditability truly justifies the complexity.")],
+    rev:["I modeled events as facts","I understand CQRS","I built an audit log"]
+  },
+  {
+    t:"Exactly-Once, Idempotency & Dead Letters",
+    obj:["Achieve reliable processing","Design idempotent consumers","Handle poison messages"],
+    exp:`<p>At-least-once delivery means duplicates happen — make consumers <b>idempotent</b> (dedupe by key). Kafka supports idempotent producers and transactions for effectively exactly-once. Route unprocessable messages to a <b>dead-letter topic</b>.</p>`,
+    articles:[A("Kafka exactly-once","https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/"),A("Idempotent consumers","https://microservices.io/patterns/communication-style/idempotent-consumer.html")],
+    videos:[V("Kafka Exactly Once — Confluent","https://www.youtube.com/watch?v=fbcUf_Za_9M")],
+    refs:[A("Dead letter queues","https://www.confluent.io/blog/error-handling-patterns-in-kafka/")],
+    lab:"Make the consumer idempotent and add a dead-letter topic for failures.",
+    proj:"Guarantee no duplicate charges under redelivery.",
+    arch:"Diagram idempotent consumer + DLQ flow.",
+    qa:[Q("How do you guarantee a payment event is processed exactly once?","At-least-once delivery plus idempotent consumers keyed on a unique event/idempotency ID, or Kafka transactions for read-process-write atomicity. Duplicates are deduped, failures go to a DLQ for investigation. True exactly-once end-to-end requires idempotency at every step.")],
+    rev:["I made consumers idempotent","I added a DLQ","I understand exactly-once"]
+  },
+  {
+    t:"Kafka Streams & Real-Time Processing",
+    obj:["Process streams in real time","Use windowing & aggregations","Build a stream topology"],
+    exp:`<p><b>Kafka Streams</b> processes topics as continuous streams — filtering, joining, aggregating with time windows — enabling real-time fraud scoring, metrics, and enrichment without a separate cluster.</p>`,
+    articles:[A("Kafka Streams docs","https://kafka.apache.org/documentation/streams/"),A("Streams concepts","https://developer.confluent.io/courses/kafka-streams/get-started/")],
+    videos:[V("Kafka Streams — Confluent","https://www.youtube.com/watch?v=A9KQufGb4_A")],
+    refs:[A("ksqlDB","https://ksqldb.io/")],
+    lab:"Build a stream that counts charges per merchant in 1-minute windows.",
+    proj:"Add real-time transaction volume metrics via Kafka Streams.",
+    arch:"Diagram a stream topology with windowed aggregation.",
+    qa:[Q("Where would you use stream processing in payments?","Real-time fraud detection, velocity checks, live dashboards, and enrichment — anywhere decisions must be made within seconds on a continuous flow. I'd weigh it against batch for cost and latency requirements.")],
+    rev:["I built a stream","I used windowing","I understand real-time use cases"]
+  },
+  {
+    t:"Week 6 Review & Event-Driven Project",
+    obj:["Integrate messaging skills","Ship an event-driven feature","Self-assess"],
+    exp:`<p>Deliver an event-driven payments feature: reliable Kafka events, idempotent consumers, a read model, and a real-time metric.</p>`,
+    articles:[A("Kafka: The Definitive Guide","https://www.confluent.io/resources/kafka-the-definitive-guide/")],
+    videos:[V("Kafka Full Course — Confluent","https://www.youtube.com/watch?v=Ch5VhJzaoaI")],
+    refs:[A("Confluent Developer","https://developer.confluent.io/")],
+    lab:"End-to-end test the event pipeline including failure/DLQ paths.",
+    proj:"Finalize and document the event-driven payments pipeline.",
+    arch:"Present the event-driven architecture to a mock panel.",
+    qa:[Q("Design an event-driven notification system for payments.","Emit domain events (ChargeCompleted) to Kafka, partition by account for ordering, idempotent consumers to build notifications, DLQ for failures, and monitoring on lag. I'd ensure PII handling, retention, and replayability for audits.")],
+    rev:["Pipeline works end-to-end","DLQ handled","I can present it"]
+  }
+]});
+
+/* ---------- WEEK 7 : Containers, Docker & Kubernetes ---------- */
+WEEKS.push({
+  n:7, title:"Containers, Docker & Kubernetes", section:"Kubernetes",
+  summary:"Containerization, image best practices, Kubernetes orchestration, deployments, scaling and self-healing.",
+  days:[
+  {
+    t:"Containers & Docker Fundamentals",
+    obj:["Explain containers vs VMs","Build a Docker image","Run and network containers"],
+    exp:`<p>Containers package an app with its dependencies into an isolated, portable unit sharing the host kernel — lighter than VMs. Docker builds <b>images</b> (layered, immutable) that run as <b>containers</b>. Solves "works on my machine."</p>`,
+    articles:[A("Docker: Get Started","https://docs.docker.com/get-started/"),A("Containers vs VMs","https://www.docker.com/resources/what-container/")],
+    videos:[V("Docker in 100 min — Fireship","https://www.youtube.com/watch?v=Gjnup-PuquQ"),V("Docker Tutorial — TechWorld with Nana","https://www.youtube.com/watch?v=3c-iBn73dDE")],
+    refs:[A("Docker docs","https://docs.docker.com/")],
+    lab:"Write a Dockerfile for the Payments API and run it locally.",
+    proj:"Containerize the payments service with a proper Dockerfile.",
+    arch:"Diagram image layers and the container runtime.",
+    qa:[Q("How do containers differ from VMs?","Containers virtualize the OS and share the host kernel, so they start in ms and are lightweight; VMs virtualize hardware with a full guest OS, offering stronger isolation at higher cost. I pick containers for density/speed and reserve VMs for strong isolation needs.")],
+    rev:["I built an image","I ran a container","I know containers vs VMs"]
+  },
+  {
+    t:"Dockerfile Best Practices & Multi-Stage Builds",
+    obj:["Write efficient Dockerfiles","Use multi-stage builds","Secure & shrink images"],
+    exp:`<p>Optimize layer caching, use <b>multi-stage builds</b> to keep runtime images small, run as non-root, pin versions, and scan for vulnerabilities. A lean image deploys faster and has a smaller attack surface.</p>
+    <pre><code>FROM eclipse-temurin:21-jdk AS build
+COPY . . && RUN ./gradlew bootJar
+FROM eclipse-temurin:21-jre
+COPY --from=build /app/build/libs/*.jar app.jar
+USER 1000
+ENTRYPOINT ["java","-jar","/app.jar"]</code></pre>`,
+    articles:[A("Dockerfile best practices","https://docs.docker.com/develop/develop-images/dockerfile_best-practices/"),A("Multi-stage builds","https://docs.docker.com/build/building/multi-stage/")],
+    videos:[V("Docker Best Practices — TechWorld with Nana","https://www.youtube.com/watch?v=8vXoMqWgbQQ")],
+    refs:[A("Distroless images","https://github.com/GoogleContainerTools/distroless")],
+    lab:"Convert to a multi-stage build; compare image sizes before/after.",
+    proj:"Produce a hardened, minimal image for the payments service.",
+    arch:"Diagram a multi-stage build pipeline.",
+    qa:[Q("How do you make container images production-ready?","Multi-stage builds for small images, non-root user, pinned base versions, minimal/distroless base, vulnerability scanning in CI, no secrets baked in, and a healthcheck. Smaller, hardened images reduce attack surface and deploy time.")],
+    rev:["I used multi-stage build","I run as non-root","I scanned the image"]
+  },
+  {
+    t:"Kubernetes Architecture & Core Objects",
+    obj:["Explain K8s control plane","Understand Pods/ReplicaSets/Deployments","Use declarative manifests"],
+    exp:`<p>Kubernetes orchestrates containers across a cluster. The <b>control plane</b> (API server, scheduler, controller manager, etcd) drives desired state; <b>nodes</b> run <b>Pods</b>. You declare desired state; K8s reconciles reality to match.</p>`,
+    articles:[A("K8s concepts","https://kubernetes.io/docs/concepts/"),A("K8s components","https://kubernetes.io/docs/concepts/overview/components/")],
+    videos:[V("Kubernetes in 100s — Fireship","https://www.youtube.com/watch?v=PziYflu8cB8"),V("Kubernetes Tutorial — TechWorld with Nana","https://www.youtube.com/watch?v=X48VuDVv0do")],
+    refs:[A("Kubernetes docs","https://kubernetes.io/docs/home/")],
+    lab:"Deploy the payments image as a Deployment with 3 replicas on a local cluster (kind/minikube).",
+    proj:"Write K8s manifests (Deployment + Service) for the payments service.",
+    arch:"Diagram the control plane and node components.",
+    qa:[Q("What does Kubernetes give you over plain Docker?","Declarative desired-state orchestration: self-healing, rolling updates, autoscaling, service discovery, load balancing, and config/secret management across a cluster. It turns 'run a container' into 'operate a resilient service.'")],
+    rev:["I deployed to K8s","I wrote manifests","I understand the control plane"]
+  },
+  {
+    t:"Services, Ingress, ConfigMaps & Secrets",
+    obj:["Expose apps with Services/Ingress","Manage config with ConfigMaps","Handle secrets securely"],
+    exp:`<p><b>Services</b> give stable networking to ephemeral Pods; <b>Ingress</b> routes external HTTP. <b>ConfigMaps</b>/<b>Secrets</b> externalize config. Secrets should be encrypted at rest and injected, never baked into images.</p>`,
+    articles:[A("K8s Services","https://kubernetes.io/docs/concepts/services-networking/service/"),A("ConfigMaps & Secrets","https://kubernetes.io/docs/concepts/configuration/secret/")],
+    videos:[V("K8s Services & Ingress — TechWorld with Nana","https://www.youtube.com/watch?v=T4Z7visMM4E")],
+    refs:[A("Ingress","https://kubernetes.io/docs/concepts/services-networking/ingress/")],
+    lab:"Expose the service via Ingress and inject config via ConfigMap + Secret.",
+    proj:"Externalize payments config/secrets in K8s.",
+    arch:"Diagram traffic: Ingress → Service → Pods.",
+    qa:[Q("How do you manage secrets in Kubernetes securely?","Store as Secrets with encryption-at-rest enabled, restrict via RBAC, avoid committing them, and ideally integrate an external manager (Vault/CSI driver) so secrets are injected at runtime and rotated. Never bake secrets into images or env in git.")],
+    rev:["I used a Service/Ingress","I externalized config","I handled secrets safely"]
+  },
+  {
+    t:"Scaling, Self-Healing & Rolling Deployments",
+    obj:["Configure autoscaling","Use probes for self-healing","Do zero-downtime deploys"],
+    exp:`<p>K8s self-heals via <b>liveness/readiness probes</b> and restarts. The <b>Horizontal Pod Autoscaler</b> scales on CPU/metrics. <b>Rolling updates</b> deploy without downtime; combine with resource requests/limits for stability.</p>`,
+    articles:[A("HPA","https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"),A("Probes","https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/")],
+    videos:[V("K8s Autoscaling — TechWorld with Nana","https://www.youtube.com/watch?v=jM36M39MA3I")],
+    refs:[A("Rolling updates","https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/")],
+    lab:"Add liveness/readiness probes and an HPA; trigger a rolling update.",
+    proj:"Make the payments deployment self-healing and autoscaling.",
+    arch:"Diagram a rolling update replacing pods gradually.",
+    qa:[Q("How do you achieve zero-downtime deployments?","Rolling updates with readiness probes so traffic only hits ready pods, sensible maxSurge/maxUnavailable, graceful shutdown handling in-flight requests, and health checks. For risky changes I use canary/blue-green. This keeps payments available during deploys.")],
+    rev:["I added probes","I configured HPA","I did a rolling update"]
+  },
+  {
+    t:"Helm, GitOps & Cluster Operations",
+    obj:["Package apps with Helm","Understand GitOps","Operate clusters safely"],
+    exp:`<p><b>Helm</b> templates and versions K8s manifests as reusable charts. <b>GitOps</b> (Argo CD/Flux) makes git the source of truth — the cluster continuously reconciles to the repo, giving auditable, revertible deployments.</p>`,
+    articles:[A("Helm docs","https://helm.sh/docs/"),A("GitOps principles","https://opengitops.dev/")],
+    videos:[V("Helm — TechWorld with Nana","https://www.youtube.com/watch?v=-ykwb1d0DXU"),V("GitOps with Argo CD","https://www.youtube.com/watch?v=MeU5_k9ssrs")],
+    refs:[A("Argo CD","https://argo-cd.readthedocs.io/")],
+    lab:"Package the payments manifests as a Helm chart with values per environment.",
+    proj:"Set up a GitOps flow deploying the payments chart.",
+    arch:"Diagram a GitOps reconciliation loop.",
+    qa:[Q("What is GitOps and why adopt it?","Git becomes the single source of truth for desired state; an operator continuously reconciles the cluster to match. Benefits: auditability, easy rollback (git revert), consistency across environments, and reduced config drift. It's how I'd standardize deployments across many teams.")],
+    rev:["I built a Helm chart","I understand GitOps","I can operate a cluster"]
+  },
+  {
+    t:"Week 7 Review & Container Platform Project",
+    obj:["Integrate container/K8s skills","Ship a cloud-native deployment","Self-assess"],
+    exp:`<p>Deliver the payments service running on Kubernetes: hardened image, Helm chart, probes, autoscaling, and GitOps delivery.</p>`,
+    articles:[A("K8s production best practices","https://kubernetes.io/docs/setup/best-practices/")],
+    videos:[V("Kubernetes Full Course — TechWorld with Nana","https://www.youtube.com/watch?v=X48VuDVv0do")],
+    refs:[A("CNCF landscape","https://landscape.cncf.io/")],
+    lab:"Deploy end-to-end via Helm + GitOps and verify self-healing by killing a pod.",
+    proj:"Finalize the cloud-native payments deployment with docs.",
+    arch:"Present the deployment architecture to a mock panel.",
+    qa:[Q("How do you run a Java service reliably on Kubernetes?","Right-sized resource requests/limits, JVM container-awareness flags, liveness/readiness/startup probes, HPA, rolling/canary deploys, externalized config/secrets, and observability. I treat resilience and cost as first-class, validated by load and chaos tests.")],
+    rev:["Deployed on K8s","GitOps working","Self-healing verified"]
+  }
+]});
+
+/* ---------- WEEK 8 : Cloud (AWS), Terraform & CI/CD ---------- */
+WEEKS.push({
+  n:8, title:"Cloud (AWS), Terraform & CI/CD", section:"AWS",
+  summary:"AWS core services, well-architected principles, infrastructure as code with Terraform, and automated delivery pipelines.",
+  days:[
+  {
+    t:"AWS Core Services & Global Infrastructure",
+    obj:["Navigate core AWS services","Understand regions/AZs","Map services to needs"],
+    exp:`<p>AWS spans <b>regions</b> and <b>availability zones</b> for resilience. Core building blocks: <b>EC2</b> (compute), <b>S3</b> (object storage), <b>RDS</b> (managed DB), <b>VPC</b> (networking), <b>IAM</b> (identity). Design across AZs for high availability.</p>`,
+    articles:[A("AWS Global Infrastructure","https://aws.amazon.com/about-aws/global-infrastructure/"),A("AWS core services","https://docs.aws.amazon.com/")],
+    videos:[V("AWS in 100s — Fireship","https://www.youtube.com/watch?v=JIbIYCM48to"),V("AWS Basics — freeCodeCamp","https://www.youtube.com/watch?v=ulprqHHWlng")],
+    refs:[A("AWS documentation","https://docs.aws.amazon.com/")],
+    lab:"Provision an S3 bucket and an RDS instance (or use LocalStack) and connect the app.",
+    proj:"Design the AWS target architecture for the payments platform.",
+    arch:"Diagram a multi-AZ VPC with app + DB tiers.",
+    qa:[Q("How do you design for high availability on AWS?","Deploy across multiple AZs, use managed multi-AZ databases, load balancers, auto scaling, health checks, and stateless app tiers with externalized state. For payments I'd add multi-region DR with defined RTO/RPO.")],
+    rev:["I know core AWS services","I understand AZs/regions","I designed an HA layout"]
+  },
+  {
+    t:"IAM, Security & the Shared Responsibility Model",
+    obj:["Apply least-privilege IAM","Understand shared responsibility","Secure cloud workloads"],
+    exp:`<p>AWS secures the cloud; you secure what's <i>in</i> it. <b>IAM</b> enforces least-privilege access via users, roles, and policies. Prefer roles over long-lived keys, enable MFA, encrypt data, and audit with CloudTrail.</p>`,
+    articles:[A("IAM best practices","https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"),A("Shared Responsibility Model","https://aws.amazon.com/compliance/shared-responsibility-model/")],
+    videos:[V("AWS IAM — Be A Better Dev","https://www.youtube.com/watch?v=iF9fs8Rw4Uo")],
+    refs:[A("AWS Security docs","https://docs.aws.amazon.com/security/")],
+    lab:"Create a least-privilege IAM role for the app to access only its S3 bucket.",
+    proj:"Define IAM roles/policies for the payments services.",
+    arch:"Diagram the shared responsibility boundary.",
+    qa:[Q("Explain least privilege and how you enforce it.","Grant only the permissions a principal needs, nothing more. I enforce via scoped IAM roles/policies, no wildcards where avoidable, temporary credentials over static keys, regular access reviews, and CloudTrail auditing. In payments this is also a compliance requirement.")],
+    rev:["I applied least privilege","I understand shared responsibility","I used roles not keys"]
+  },
+  {
+    t:"Compute Options: EC2, ECS, EKS, Lambda",
+    obj:["Compare compute models","Choose serverless vs containers","Right-size for cost"],
+    exp:`<p>Compute spectrum: <b>EC2</b> (VMs, most control), <b>ECS/EKS</b> (containers), <b>Lambda</b> (serverless, event-driven, pay-per-use). Choose based on control, operational burden, scaling pattern, and cost.</p>`,
+    articles:[A("Compute services","https://aws.amazon.com/products/compute/"),A("Serverless vs containers","https://aws.amazon.com/blogs/containers/")],
+    videos:[V("AWS Compute — Be A Better Dev","https://www.youtube.com/watch?v=aoZWQljq2mA")],
+    refs:[A("AWS Lambda docs","https://docs.aws.amazon.com/lambda/")],
+    lab:"Deploy a small function to Lambda and compare with running it on ECS.",
+    proj:"Recommend a compute model for each payments component with rationale.",
+    arch:"Diagram when to pick serverless vs containers.",
+    qa:[Q("When would you choose Lambda over containers?","For spiky/event-driven workloads with short execution, where pay-per-use and zero server management win — e.g., processing webhook events. I avoid Lambda for long-running, latency-critical, or heavy-state services where cold starts and limits hurt.")],
+    rev:["I compared compute models","I deployed a Lambda","I can justify a choice"]
+  },
+  {
+    t:"Infrastructure as Code with Terraform",
+    obj:["Write Terraform configs","Manage state safely","Use modules & workspaces"],
+    exp:`<p><b>Terraform</b> declares infrastructure as versioned code. Core loop: <code>plan</code> (preview) → <code>apply</code> (converge). <b>State</b> tracks reality — store it remotely (S3 + locking) for teams. <b>Modules</b> promote reuse.</p>
+    <pre><code>resource "aws_s3_bucket" "ledger" {
+  bucket = "payments-ledger-\${var.env}"
+}</code></pre>`,
+    articles:[A("Terraform docs","https://developer.hashicorp.com/terraform/docs"),A("Terraform best practices","https://developer.hashicorp.com/terraform/language/modules/develop")],
+    videos:[V("Terraform Course — freeCodeCamp","https://www.youtube.com/watch?v=SLB_c_ayRMo"),V("Terraform — TechWorld with Nana","https://www.youtube.com/watch?v=l5k1ai_GBDE")],
+    refs:[A("Terraform Registry","https://registry.terraform.io/")],
+    lab:"Write Terraform to provision the S3 bucket + IAM role with remote state.",
+    proj:"Codify the payments infrastructure in Terraform modules.",
+    arch:"Diagram the plan/apply/state workflow.",
+    qa:[Q("Why is remote state important in Terraform?","It's the shared source of truth for what's deployed; remote state (e.g., S3 + DynamoDB lock) enables team collaboration, prevents concurrent-apply corruption, and supports drift detection. Local state doesn't scale to teams and risks divergence.")],
+    rev:["I wrote Terraform","I used remote state","I created a module"]
+  },
+  {
+    t:"CI/CD Pipelines & Automation",
+    obj:["Design CI/CD stages","Automate build/test/deploy","Add quality gates"],
+    exp:`<p>CI continuously integrates and tests every change; CD automates delivery to environments. A solid pipeline: build → unit/integration test → security scan → package → deploy (staging → prod) with approvals and rollback. Fast feedback is the goal.</p>`,
+    articles:[A("CI/CD explained","https://martinfowler.com/articles/continuousIntegration.html"),A("GitHub Actions docs","https://docs.github.com/en/actions")],
+    videos:[V("CI/CD — TechWorld with Nana","https://www.youtube.com/watch?v=scEDHsr3APg")],
+    refs:[A("GitHub Actions","https://docs.github.com/en/actions"),A("GitLab CI","https://docs.gitlab.com/ee/ci/")],
+    lab:"Build a pipeline: build → test → scan → containerize → deploy the payments service.",
+    proj:"Create an end-to-end CI/CD pipeline with quality gates.",
+    arch:"Diagram the pipeline stages and gates.",
+    qa:[Q("What makes a good CI/CD pipeline?","Fast, reliable feedback: automated tests at multiple levels, security/quality gates, reproducible builds, artifact versioning, progressive delivery (canary/blue-green), automated rollback, and observability. I measure DORA metrics — lead time, deploy frequency, MTTR, change-fail rate — to drive improvement.")],
+    rev:["I built a pipeline","I added quality gates","I automated deploy"]
+  },
+  {
+    t:"Observability, Cost & Well-Architected",
+    obj:["Apply the Well-Architected Framework","Monitor & alert","Optimize cloud cost"],
+    exp:`<p>The <b>AWS Well-Architected Framework</b> has six pillars: operational excellence, security, reliability, performance, cost optimization, sustainability. Add monitoring/alerting (CloudWatch) and continuous <b>cost optimization</b> (right-sizing, autoscaling, savings plans).</p>`,
+    articles:[A("Well-Architected Framework","https://aws.amazon.com/architecture/well-architected/"),A("Cost optimization","https://aws.amazon.com/aws-cost-management/")],
+    videos:[V("Well-Architected — AWS","https://www.youtube.com/watch?v=Kk3Ahw7f4WY")],
+    refs:[A("CloudWatch","https://docs.aws.amazon.com/cloudwatch/")],
+    lab:"Add CloudWatch dashboards/alarms and identify one cost-optimization for the stack.",
+    proj:"Review the payments architecture against Well-Architected pillars.",
+    arch:"Diagram the six pillars against your architecture.",
+    qa:[Q("How do you balance reliability and cost in the cloud?","Match spend to actual load with autoscaling and right-sizing, use reserved/savings plans for steady baselines, and set reliability targets (SLOs) that justify redundancy cost. I make cost a visible engineering metric so teams optimize continuously, not just at budget time.")],
+    rev:["I know the six pillars","I set up alarms","I found a cost saving"]
+  },
+  {
+    t:"Week 8 Review & Cloud Delivery Project",
+    obj:["Integrate cloud/IaC/CI-CD","Ship a fully automated deployment","Self-assess"],
+    exp:`<p>Deliver the payments platform to AWS via Terraform + CI/CD, monitored and cost-aware.</p>`,
+    articles:[A("DORA metrics","https://dora.dev/")],
+    videos:[V("DevOps Full Course — TechWorld with Nana","https://www.youtube.com/watch?v=j5Zsa_eOXeY")],
+    refs:[A("AWS Architecture Center","https://aws.amazon.com/architecture/")],
+    lab:"Provision infra with Terraform and deploy via the pipeline end-to-end.",
+    proj:"Finalize automated cloud delivery with monitoring and docs.",
+    arch:"Present the cloud delivery architecture to a mock panel.",
+    qa:[Q("How would you set up delivery for a new team from scratch?","Standard repo template, IaC for environments, a CI/CD pipeline with tests and security gates, observability defaults, and trunk-based development with feature flags. I'd track DORA metrics and iterate — the goal is safe, frequent, low-friction delivery.")],
+    rev:["Infra as code done","Pipeline delivers to cloud","Monitoring in place"]
+  }
+]});
+
+/* ---------- WEEK 9 : Big Data (Spark, Hadoop, Cloudera) ---------- */
+WEEKS.push({
+  n:9, title:"Big Data: Spark, Hadoop & Data Engineering", section:"Big Data",
+  summary:"Distributed data processing, Hadoop ecosystem, Apache Spark, batch vs streaming, and data pipelines for payments analytics.",
+  days:[
+  {
+    t:"Big Data Concepts & the Hadoop Ecosystem",
+    obj:["Explain the 3 Vs of big data","Understand HDFS & MapReduce","Map the Hadoop/Cloudera ecosystem"],
+    exp:`<p>Big data = volume, velocity, variety beyond a single machine. <b>Hadoop</b> pioneered distributed storage (<b>HDFS</b>) and processing (<b>MapReduce</b>) across commodity clusters. <b>Cloudera</b> packages the ecosystem (HDFS, YARN, Hive, Spark, Impala) for enterprises.</p>`,
+    articles:[A("Hadoop overview","https://hadoop.apache.org/"),A("HDFS design","https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html")],
+    videos:[V("Big Data & Hadoop — Simplilearn","https://www.youtube.com/watch?v=CZOSvw3hx40"),V("Hadoop in 5 min","https://www.youtube.com/watch?v=aReuLtY0YMI")],
+    refs:[A("Cloudera docs","https://docs.cloudera.com/")],
+    lab:"Explore HDFS commands and store a sample transactions dataset.",
+    proj:"Design a big-data analytics use case for payments (e.g., fraud analytics).",
+    arch:"Diagram HDFS storage across a cluster with replication.",
+    qa:[Q("When do you actually need big-data tooling?","When data volume/velocity exceeds what a single node or a traditional RDBMS can handle economically, or you need distributed batch/stream processing. I avoid over-engineering — many 'big data' problems fit in Postgres; I validate scale first.")],
+    rev:["I know the 3 Vs","I understand HDFS/MapReduce","I mapped the ecosystem"]
+  },
+  {
+    t:"Apache Spark Fundamentals & RDDs",
+    obj:["Explain Spark's model","Understand RDDs & lazy evaluation","Compare Spark to MapReduce"],
+    exp:`<p><b>Spark</b> processes data in-memory across a cluster, far faster than disk-based MapReduce. Core abstraction: <b>RDD</b> (resilient distributed dataset) — immutable, partitioned, fault-tolerant via lineage. Transformations are lazy; actions trigger execution.</p>`,
+    articles:[A("Spark overview","https://spark.apache.org/docs/latest/"),A("RDD guide","https://spark.apache.org/docs/latest/rdd-programming-guide.html")],
+    videos:[V("Apache Spark — Databricks","https://www.youtube.com/watch?v=zC9cnh8rJd0"),V("Spark Full Course — freeCodeCamp","https://www.youtube.com/watch?v=_C8kWso4ne4")],
+    refs:[A("Apache Spark docs","https://spark.apache.org/documentation.html")],
+    lab:"Run a Spark job counting transactions per merchant over a sample dataset.",
+    proj:"Build a Spark batch job for daily payment aggregates.",
+    arch:"Diagram driver → executors → partitions.",
+    qa:[Q("Why is Spark faster than MapReduce?","It keeps intermediate data in memory and uses a DAG scheduler that optimizes multi-stage jobs, avoiding MapReduce's disk writes between stages. Lineage gives fault tolerance without replication. For iterative/interactive workloads the difference is dramatic.")],
+    rev:["I ran a Spark job","I understand RDD lineage","I know lazy vs action"]
+  },
+  {
+    t:"Spark SQL, DataFrames & Datasets",
+    obj:["Use DataFrames/Datasets","Query with Spark SQL","Leverage Catalyst optimization"],
+    exp:`<p><b>DataFrames</b>/<b>Datasets</b> are higher-level, schema-aware APIs optimized by the <b>Catalyst</b> optimizer and Tungsten engine — usually preferred over raw RDDs. Spark SQL lets you query distributed data with familiar SQL.</p>`,
+    articles:[A("Spark SQL guide","https://spark.apache.org/docs/latest/sql-programming-guide.html"),A("DataFrames","https://spark.apache.org/docs/latest/sql-getting-started.html")],
+    videos:[V("Spark SQL & DataFrames — Databricks","https://www.youtube.com/watch?v=AoVmgzontXo")],
+    refs:[A("Catalyst optimizer","https://databricks.com/glossary/catalyst-optimizer")],
+    lab:"Rewrite the aggregation using DataFrames + Spark SQL and compare with the RDD version.",
+    proj:"Build the payments analytics with Spark SQL/DataFrames.",
+    arch:"Diagram how Catalyst optimizes a query plan.",
+    qa:[Q("DataFrame vs RDD — which and why?","DataFrames for almost everything: schema awareness lets Catalyst/Tungsten optimize and reduces boilerplate. I drop to RDDs only for low-level control or unstructured data. Choosing DataFrames also makes code more readable for the team.")],
+    rev:["I used DataFrames","I ran Spark SQL","I understand Catalyst"]
+  },
+  {
+    t:"Batch vs Streaming & Structured Streaming",
+    obj:["Compare batch vs streaming","Use Spark Structured Streaming","Design for latency needs"],
+    exp:`<p><b>Batch</b> processes bounded datasets on a schedule; <b>streaming</b> processes unbounded data continuously. <b>Structured Streaming</b> treats a stream as an ever-growing table, giving the same API for both — ideal for near-real-time fraud/analytics.</p>`,
+    articles:[A("Structured Streaming","https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html"),A("Batch vs stream","https://www.confluent.io/learn/batch-vs-real-time-data-processing/")],
+    videos:[V("Structured Streaming — Databricks","https://www.youtube.com/watch?v=rl8dIzTpxrI")],
+    refs:[A("Lambda vs Kappa architecture","https://www.oreilly.com/library/view/streaming-systems/9781491983867/")],
+    lab:"Consume the Kafka charges topic with Structured Streaming and compute rolling counts.",
+    proj:"Add streaming fraud-signal aggregation to the pipeline.",
+    arch:"Diagram batch (Lambda) vs streaming (Kappa) architectures.",
+    qa:[Q("How do you choose batch vs streaming?","By latency requirement and cost. Streaming for seconds-level decisions (fraud, alerts); batch for periodic reporting where minutes/hours are fine and it's cheaper/simpler. Often both (Lambda architecture), though I prefer a unified stream-first (Kappa) approach when feasible.")],
+    rev:["I understand batch vs stream","I ran Structured Streaming","I can pick by latency"]
+  },
+  {
+    t:"Data Pipelines, ETL & Data Lakes/Warehouses",
+    obj:["Design ETL/ELT pipelines","Compare lake vs warehouse","Ensure data quality"],
+    exp:`<p><b>ETL/ELT</b> moves and transforms data into a <b>data warehouse</b> (structured, analytics) or <b>data lake</b> (raw, flexible), increasingly a <b>lakehouse</b>. Orchestrate with tools like Airflow; enforce schema, quality checks, and lineage.</p>`,
+    articles:[A("Data lake vs warehouse","https://www.databricks.com/discover/data-lakes"),A("Airflow docs","https://airflow.apache.org/docs/")],
+    videos:[V("Data Engineering — freeCodeCamp","https://www.youtube.com/watch?v=PHsC_t0j1dU")],
+    refs:[A("The Data Warehouse Toolkit (Kimball)","https://www.kimballgroup.com/")],
+    lab:"Sketch and partially build an ETL pipeline landing payments data into a warehouse table.",
+    proj:"Design the payments analytics pipeline end-to-end (ingest → process → serve).",
+    arch:"Diagram an ETL flow with quality gates.",
+    qa:[Q("Data lake vs data warehouse — how do you decide?","Warehouse for structured, governed, high-performance analytics/BI; lake for raw, varied, high-volume data and ML. A lakehouse blends both. I decide by consumers, governance needs, and cost — and I always bake in data-quality checks and lineage regardless.")],
+    rev:["I designed an ETL flow","I know lake vs warehouse","I added quality checks"]
+  },
+  {
+    t:"Performance Tuning & Cluster Management",
+    obj:["Tune Spark jobs","Avoid shuffles & skew","Manage cluster resources"],
+    exp:`<p>Spark performance hinges on minimizing <b>shuffles</b>, handling <b>data skew</b> (salting), right partitioning, caching reused datasets, and tuning executor memory/cores. <b>YARN</b>/K8s schedule cluster resources.</p>`,
+    articles:[A("Spark tuning","https://spark.apache.org/docs/latest/tuning.html"),A("Handling skew","https://spark.apache.org/docs/latest/sql-performance-tuning.html")],
+    videos:[V("Spark Performance Tuning — Databricks","https://www.youtube.com/watch?v=daXEp4HmS-E")],
+    refs:[A("Spark configuration","https://spark.apache.org/docs/latest/configuration.html")],
+    lab:"Identify a shuffle-heavy job and optimize partitioning/caching; measure runtime.",
+    proj:"Tune the payments analytics job for throughput.",
+    arch:"Diagram how a shuffle redistributes data across partitions.",
+    qa:[Q("How do you speed up a slow Spark job?","Profile the DAG/stages, reduce and optimize shuffles, fix data skew (salting/broadcast joins), cache reused datasets, right-size partitions and executors, and prefer DataFrames for Catalyst optimization. I measure before/after rather than guessing.")],
+    rev:["I reduced a shuffle","I handled skew","I tuned resources"]
+  },
+  {
+    t:"Week 9 Review & Data Pipeline Project",
+    obj:["Integrate big-data skills","Ship an analytics pipeline","Self-assess"],
+    exp:`<p>Deliver a payments analytics pipeline: ingest events, process with Spark (batch + streaming), and serve aggregates, tuned and documented.</p>`,
+    articles:[A("Designing Data-Intensive Applications","https://dataintensive.net/")],
+    videos:[V("Apache Spark Full Course — Simplilearn","https://www.youtube.com/watch?v=F8pyaR4uQ2g")],
+    refs:[A("Databricks Academy","https://www.databricks.com/learn")],
+    lab:"Run the full pipeline on the sample dataset and validate results.",
+    proj:"Finalize and document the payments analytics pipeline.",
+    arch:"Present the data architecture to a mock panel.",
+    qa:[Q("Design a data platform for real-time fraud detection.","Ingest transactions via Kafka, run streaming feature computation (velocity, geo, amount patterns) in Spark/Flink, score against models with low latency, store features in a fast store, and land raw+curated data in a lakehouse for retraining and audit. I'd anchor on latency SLOs, accuracy, and cost.")],
+    rev:["Pipeline runs end-to-end","Batch + streaming work","I can present it"]
+  }
+]});
+
+/* ---------- WEEK 10 : System Design & Design Patterns ---------- */
+WEEKS.push({
+  n:10, title:"System Design & Design Patterns", section:"System Design",
+  summary:"Scalability, caching, load balancing, CAP, design patterns, and structured approaches to large-scale system design interviews.",
+  days:[
+  {
+    t:"System Design Fundamentals & Approach",
+    obj:["Structure a design interview","Clarify requirements & scale","Estimate capacity"],
+    exp:`<p>A repeatable framework: <b>1)</b> clarify functional + non-functional requirements, <b>2)</b> estimate scale (QPS, storage), <b>3)</b> define APIs, <b>4)</b> high-level design, <b>5)</b> deep-dive components, <b>6)</b> address bottlenecks & trade-offs. Always state assumptions.</p>
+    <div class="callout tip"><b>Manager lens:</b> Interviewers assess judgment and communication more than a single 'right' answer. Think out loud and justify trade-offs.</div>`,
+    articles:[A("System Design Primer","https://github.com/donnemartin/system-design-primer"),A("Grokking System Design","https://www.educative.io/courses/grokking-the-system-design-interview")],
+    videos:[V("System Design Basics — Gaurav Sen","https://www.youtube.com/watch?v=xpDnVSmNFX0"),V("System Design Intro — ByteByteGo","https://www.youtube.com/watch?v=i7twT3x5yv8")],
+    refs:[A("ByteByteGo","https://bytebytego.com/")],
+    lab:"Do a capacity estimate for a payments API at 10k TPS (storage, bandwidth, servers).",
+    proj:"Write a design template you'll reuse for every practice problem.",
+    arch:"Diagram the 6-step design approach.",
+    qa:[Q("Walk me through how you approach a system design problem.","Clarify functional and non-functional requirements, estimate scale, sketch APIs and a high-level architecture, then deep-dive the hardest components, always calling out trade-offs and failure modes. I anchor on the business constraints — for payments that's consistency, security, and availability.")],
+    rev:["I have a design framework","I did a capacity estimate","I state assumptions"]
+  },
+  {
+    t:"Scalability, Load Balancing & Caching",
+    obj:["Scale horizontally","Use load balancers","Apply caching strategies"],
+    exp:`<p>Scale <b>vertically</b> (bigger box) or <b>horizontally</b> (more boxes + load balancer). <b>Caching</b> (client, CDN, app, DB) cuts latency and load — but invalidation is hard. Know write-through vs write-back and TTL/eviction.</p>`,
+    articles:[A("Caching — AWS","https://aws.amazon.com/caching/"),A("Load balancing","https://www.nginx.com/resources/glossary/load-balancing/")],
+    videos:[V("Caching — Gaurav Sen","https://www.youtube.com/watch?v=U3RkDLtS7uY"),V("Load Balancing — ByteByteGo","https://www.youtube.com/watch?v=K0Ta65OqQkY")],
+    refs:[A("Redis docs","https://redis.io/docs/")],
+    lab:"Add a Redis cache to the Payments API read path and measure latency improvement.",
+    proj:"Introduce caching + a load balancer to the payments architecture.",
+    arch:"Diagram a multi-tier cache (CDN → app → DB).",
+    qa:[Q("What are the hard parts of caching?","Invalidation and consistency — stale reads can be dangerous in payments. I choose strategy per use case (write-through for correctness, TTLs for tolerable staleness), guard against thundering herds and cache stampedes, and never cache sensitive data insecurely.")],
+    rev:["I added caching","I understand LB options","I know invalidation risks"]
+  },
+  {
+    t:"Databases at Scale, Sharding & CAP",
+    obj:["Apply CAP/PACELC","Shard & replicate data","Choose SQL vs NoSQL"],
+    exp:`<p><b>CAP</b>: under partition you trade consistency vs availability. <b>Replication</b> scales reads and adds HA; <b>sharding</b> scales writes by partitioning data. Choose SQL for strong consistency/transactions (payments core), NoSQL for scale/flexible schema.</p>`,
+    articles:[A("CAP theorem","https://www.ibm.com/topics/cap-theorem"),A("Sharding","https://www.mongodb.com/features/database-sharding-explained")],
+    videos:[V("CAP Theorem — Gaurav Sen","https://www.youtube.com/watch?v=Jw1iN1QOChg"),V("Sharding — Hussein Nasser","https://www.youtube.com/watch?v=5faMjKuB9bc")],
+    refs:[A("Designing Data-Intensive Applications","https://dataintensive.net/")],
+    lab:"Design a sharding key for the transactions table and discuss hotspots.",
+    proj:"Plan the data-scaling strategy for the payments platform.",
+    arch:"Diagram replication + sharding topology.",
+    qa:[Q("How does CAP apply to a payments system?","Core ledger operations need strong consistency (correctness over availability under partition — CP), while read-heavy/analytics paths can favor availability (AP). I split the system so the money-moving path is consistent and transactional, and peripheral features tolerate eventual consistency.")],
+    rev:["I understand CAP","I designed a shard key","I can pick SQL vs NoSQL"]
+  },
+  {
+    t:"SOLID Principles & Clean Architecture",
+    obj:["Apply SOLID","Separate concerns with layers","Keep dependencies pointing inward"],
+    exp:`<p><b>SOLID</b>: Single-responsibility, Open/closed, Liskov substitution, Interface segregation, Dependency inversion. <b>Clean/Hexagonal architecture</b> keeps business logic independent of frameworks/DB, with dependencies pointing inward — testable and adaptable.</p>`,
+    articles:[A("SOLID — Baeldung","https://www.baeldung.com/solid-principles"),A("Clean Architecture — Uncle Bob","https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html")],
+    videos:[V("SOLID Principles — Amigoscode","https://www.youtube.com/watch?v=HLFbeC78YlU")],
+    refs:[A("Hexagonal architecture","https://alistair.cockburn.us/hexagonal-architecture/")],
+    lab:"Refactor a component to satisfy SOLID (e.g., extract an interface, split responsibilities).",
+    proj:"Restructure the Payments API toward hexagonal architecture.",
+    arch:"Diagram ports/adapters around a domain core.",
+    qa:[Q("How do SOLID principles help a team at scale?","They keep modules cohesive, loosely coupled, and open to extension, so large teams change code with less risk and easier testing. As a manager I use them as shared review vocabulary — 'this violates SRP' communicates a concrete, fixable issue.")],
+    rev:["I applied SOLID","I separated concerns","I know clean architecture"]
+  },
+  {
+    t:"Creational & Structural Design Patterns",
+    obj:["Apply Factory/Builder/Singleton","Use Adapter/Decorator/Facade","Recognize patterns in frameworks"],
+    exp:`<p><b>Creational</b> (Factory, Builder, Singleton) manage object creation; <b>Structural</b> (Adapter, Decorator, Facade, Proxy) compose objects. Spring itself is full of these — recognizing them speeds comprehension.</p>`,
+    articles:[A("Refactoring.Guru: Patterns","https://refactoring.guru/design-patterns"),A("Java patterns — Baeldung","https://www.baeldung.com/design-patterns-series")],
+    videos:[V("Design Patterns — Christopher Okhravi","https://www.youtube.com/playlist?list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc")],
+    refs:[A("GoF Design Patterns","https://en.wikipedia.org/wiki/Design_Patterns")],
+    lab:"Use a Builder for a complex Charge object and an Adapter for an external gateway.",
+    proj:"Introduce Factory + Strategy for pluggable payment processors.",
+    arch:"Diagram a Decorator wrapping a processor with logging/retry.",
+    qa:[Q("Give an example where a design pattern genuinely helped.","Strategy + Factory for payment processors let us add a new rail without touching existing code (open/closed), and a Decorator added cross-cutting retry/logging cleanly. Patterns are a means to maintainability, not a goal — I discourage over-patterning.")],
+    rev:["I used a creational pattern","I used a structural pattern","I spotted patterns in Spring"]
+  },
+  {
+    t:"Behavioral Patterns & Anti-Patterns",
+    obj:["Apply Strategy/Observer/Template","Recognize anti-patterns","Refactor toward maintainability"],
+    exp:`<p><b>Behavioral</b> patterns (Strategy, Observer, Template Method, Command, State) manage collaboration and responsibility. Equally important: spotting <b>anti-patterns</b> (God object, spaghetti, premature optimization) and refactoring them out.</p>`,
+    articles:[A("Behavioral patterns","https://refactoring.guru/design-patterns/behavioral-patterns"),A("Anti-patterns","https://sourcemaking.com/antipatterns")],
+    videos:[V("Strategy & Observer — Christopher Okhravi","https://www.youtube.com/watch?v=v9ejT8FO-7I")],
+    refs:[A("Refactoring (Fowler)","https://refactoring.com/")],
+    lab:"Implement the Observer pattern for payment status notifications.",
+    proj:"Refactor one anti-pattern in the codebase toward a clean pattern.",
+    arch:"Diagram a State machine for a payment's lifecycle.",
+    qa:[Q("How do you handle a 'God class' a team keeps growing?","Identify its responsibilities, extract cohesive collaborators (SRP), introduce interfaces to decouple, add tests as a safety net, and refactor incrementally behind feature flags. I frame it as reducing change-risk and cognitive load, and schedule it against feature work deliberately.")],
+    rev:["I used a behavioral pattern","I spotted an anti-pattern","I refactored it"]
+  },
+  {
+    t:"Week 10 Review & System Design Mock",
+    obj:["Integrate design skills","Do a full design mock","Self-assess"],
+    exp:`<p>Do a timed end-to-end system design (e.g., "design a payment gateway" or "design a URL shortener") using your framework, then critique your own trade-offs.</p>`,
+    articles:[A("System Design Primer — practice","https://github.com/donnemartin/system-design-primer#system-design-interview-questions-with-solutions")],
+    videos:[V("Design a Payment System — ByteByteGo","https://www.youtube.com/watch?v=olfaK1lHzm8")],
+    refs:[A("System Design Interview (Alex Xu)","https://bytebytego.com/")],
+    lab:"Design a payment gateway end-to-end in 45 minutes; capture your diagram and trade-offs.",
+    proj:"Produce a written system-design case study you can present.",
+    arch:"Present a full payment-gateway design to a mock panel.",
+    qa:[Q("Design a payment gateway handling millions of transactions.","Stateless API tier behind a load balancer, idempotent authorization, a strongly consistent ledger (sharded SQL), async events for downstream, caching for reads, resilience patterns, and full observability — plus PCI-compliant security and reconciliation. I'd emphasize consistency and auditability as non-negotiable, then scale reads and peripheral flows.")],
+    rev:["I completed a design mock","I documented trade-offs","I can present a design"]
+  }
+]});
+
+/* ---------- WEEK 11 : Engineering Management, Agile & Leadership ---------- */
+WEEKS.push({
+  n:11, title:"Engineering Management, Agile & Leadership", section:"Engineering Management",
+  summary:"The transition to management: people leadership, agile delivery, performance, hiring, and driving engineering excellence.",
+  days:[
+  {
+    t:"The IC-to-Manager Transition & Your Role",
+    obj:["Redefine success as a manager","Balance delegation vs doing","Understand your leverage"],
+    exp:`<p>Your output is now your <b>team's output</b>, not your own commits. Success shifts from writing code to multiplying others: setting direction, removing blockers, growing people, and ensuring delivery. The hardest habit: <b>delegate and trust</b> instead of doing it yourself.</p>
+    <div class="callout tip"><b>Key mindset:</b> A manager's leverage is 1:N. Time spent unblocking, coaching, and clarifying priorities pays back across the whole team.</div>`,
+    articles:[A("The Manager's Path (summary)","https://www.oreilly.com/library/view/the-managers-path/9781491973882/"),A("First 90 days as EM","https://www.themuse.com/advice/the-first-90-days-as-a-new-manager")],
+    videos:[V("Engineering Management — Rand Fishkin/others","https://www.youtube.com/results?search_query=engineering+manager+first+90+days")],
+    refs:[A("StaffEng","https://staffeng.com/"),A("The Manager's Handbook","https://themanagershandbook.com/")],
+    lab:"Write your 30/60/90-day plan as a new EM: relationships, understanding, and quick wins.",
+    proj:"Draft your management philosophy (one page): how you lead, decide, and grow people.",
+    arch:"Map your stakeholders and where you add leverage.",
+    qa:[Q("How is being a manager different from being a senior engineer?","My job is now to maximize the team's output and growth, not my own. I trade individual coding leverage for organizational leverage — setting direction, unblocking, coaching, hiring, and creating an environment where engineers do their best work. Success is measured by the team's outcomes.")],
+    rev:["I wrote a 30/60/90 plan","I drafted a philosophy","I understand 1:N leverage"]
+  },
+  {
+    t:"1:1s, Coaching & Growing Engineers",
+    obj:["Run effective 1:1s","Coach vs mentor vs direct","Support career growth"],
+    exp:`<p><b>1:1s</b> are the manager's most important recurring tool — the engineer's meeting, focused on their growth, blockers, and feedback (both directions). Use <b>coaching</b> (ask questions) for growth, <b>mentoring</b> for expertise, <b>directing</b> when clarity/urgency demands.</p>`,
+    articles:[A("High Output Management (Grove)","https://www.goodreads.com/book/show/324750.High_Output_Management"),A("Effective 1:1s","https://larahogan.me/blog/first-one-on-one-questions/")],
+    videos:[V("Great 1:1 meetings","https://www.youtube.com/results?search_query=effective+one+on+one+meetings+manager")],
+    refs:[A("Radical Candor","https://www.radicalcandor.com/"),A("Lara Hogan blog","https://larahogan.me/blog/")],
+    lab:"Design a 1:1 template and a growth-plan format for a mid-level engineer.",
+    proj:"Create a career-ladder-aligned development plan for a hypothetical report.",
+    arch:"Map a coaching conversation using the GROW model.",
+    qa:[Q("How do you help an engineer grow to the next level?","Understand their goals, align to the career ladder, co-create a plan with stretch projects and clear success criteria, give frequent specific feedback, and create visibility for their work. I coach with questions to build their judgment rather than just handing answers.")],
+    rev:["I have a 1:1 template","I know coach vs direct","I made a growth plan"]
+  },
+  {
+    t:"Agile, Scrum & Delivery Execution",
+    obj:["Run Scrum/Kanban well","Improve flow & predictability","Avoid process theater"],
+    exp:`<p>Agile values working software and responding to change. <b>Scrum</b> (sprints, ceremonies) and <b>Kanban</b> (flow, WIP limits) are tools, not religion. Focus on outcomes: predictable delivery, fast feedback, and continuous improvement — not ceremony for its own sake.</p>`,
+    articles:[A("Agile Manifesto","https://agilemanifesto.org/"),A("Scrum Guide","https://scrumguides.org/")],
+    videos:[V("Agile & Scrum — Simplilearn","https://www.youtube.com/watch?v=9TycLR0TqFA")],
+    refs:[A("Kanban","https://www.atlassian.com/agile/kanban"),A("Accelerate (DORA)","https://dora.dev/")],
+    lab:"Design a lightweight sprint process for a 6-person team and define its metrics.",
+    proj:"Define your team's definition of done, estimation approach, and flow metrics.",
+    arch:"Diagram a value stream from idea to production.",
+    qa:[Q("How do you improve a team's delivery predictability?","Measure flow (cycle time, throughput, WIP), limit WIP, break work small, protect focus time, and run honest retrospectives that produce real changes. I use DORA metrics as outcome signals and resist process theater — the goal is flow, not ceremony compliance.")],
+    rev:["I designed a sprint process","I know Scrum vs Kanban","I defined delivery metrics"]
+  },
+  {
+    t:"Performance Management & Difficult Conversations",
+    obj:["Give effective feedback","Handle underperformance","Recognize & retain talent"],
+    exp:`<p>Feedback should be timely, specific, and actionable (SBI: Situation-Behavior-Impact). Address <b>underperformance</b> early with clear expectations and support; document and be fair. Equally, actively <b>recognize and retain</b> high performers.</p>`,
+    articles:[A("Radical Candor","https://www.radicalcandor.com/"),A("SBI feedback model","https://www.ccl.org/articles/leading-effectively-articles/closing-the-gap-between-intent-and-impact/")],
+    videos:[V("Difficult Conversations — manager skills","https://www.youtube.com/results?search_query=manager+difficult+conversations+feedback")],
+    refs:[A("Crucial Conversations","https://cruciallearning.com/crucial-conversations-book/")],
+    lab:"Role-play a feedback conversation for a missed commitment using SBI.",
+    proj:"Draft a fair, supportive performance-improvement plan template.",
+    arch:"Map an escalation path from feedback → PIP → decision.",
+    qa:[Q("How do you handle an underperforming engineer?","Diagnose root cause (skill, clarity, motivation, or personal factors), set explicit expectations and a support plan with a timeline, give frequent honest feedback, and document fairly. Most people improve with clarity and support; if not, I act decisively and humanely. I never let it fester — it's unfair to the person and the team.")],
+    rev:["I can give SBI feedback","I have a PIP template","I plan recognition too"]
+  },
+  {
+    t:"Hiring, Interviewing & Building Teams",
+    obj:["Design a fair hiring process","Reduce bias","Build diverse, strong teams"],
+    exp:`<p>Hiring is your highest-leverage activity. Define the role and a <b>structured</b>, consistent process (clear rubrics, calibrated interviewers) to reduce bias and improve signal. Prioritize both capability and how a person raises the team's bar and diversity.</p>`,
+    articles:[A("Structured interviews — Google re:Work","https://rework.withgoogle.com/guides/hiring-use-structured-interviewing/"),A("Reducing bias","https://rework.withgoogle.com/subjects/unbiasing/")],
+    videos:[V("Hiring engineers well","https://www.youtube.com/results?search_query=hiring+software+engineers+structured+interview")],
+    refs:[A("Who: The A Method for Hiring","https://www.smartrecruiters.com/")],
+    lab:"Design an interview loop + rubric for a senior engineer role.",
+    proj:"Write a role scorecard and structured interview guide.",
+    arch:"Map a hiring funnel with signal at each stage.",
+    qa:[Q("How do you build a strong, diverse engineering team?","Structured hiring with clear rubrics and calibrated interviewers to reduce bias, sourcing from varied pipelines, defining roles by outcomes not pedigree, and creating an inclusive culture where people stay and grow. Diverse teams make better decisions — I treat it as an engineering strength, not a checkbox.")],
+    rev:["I designed an interview loop","I built a rubric","I plan for diversity"]
+  },
+  {
+    t:"Technical Strategy, Stakeholders & Communication",
+    obj:["Set technical direction","Manage stakeholders & tradeoffs","Communicate up and across"],
+    exp:`<p>Managers translate business goals into technical strategy and vice versa. Balance delivery with <b>tech debt</b>, communicate trade-offs to non-technical stakeholders, manage dependencies, and make the team's work and constraints visible. Influence without authority is a core skill.</p>`,
+    articles:[A("Managing tech debt","https://martinfowler.com/bliki/TechnicalDebt.html"),A("Communicating up","https://staffeng.com/guides/manage-up/")],
+    videos:[V("Technical strategy for EMs","https://www.youtube.com/results?search_query=engineering+manager+technical+strategy")],
+    refs:[A("An Elegant Puzzle (Larson)","https://lethain.com/elegant-puzzle/")],
+    lab:"Write a one-page technical strategy proposal balancing a feature vs paying down debt.",
+    proj:"Draft a stakeholder communication plan for a major initiative.",
+    arch:"Map stakeholders by influence/interest.",
+    qa:[Q("How do you justify investing in tech debt or infra to non-technical leadership?","I frame it in business terms: risk, velocity, reliability, and cost. E.g., 'this refactor cuts incident rate and doubles delivery speed for the roadmap.' I quantify where possible, tie it to outcomes leaders care about, and propose a balanced allocation rather than an all-or-nothing ask.")],
+    rev:["I wrote a strategy one-pager","I can frame debt in business terms","I mapped stakeholders"]
+  },
+  {
+    t:"Week 11 Review & Leadership Scenarios",
+    obj:["Integrate management skills","Practice leadership scenarios","Self-assess"],
+    exp:`<p>Practice realistic scenarios: a missed deadline, a conflict between two seniors, a reorg, a burned-out star engineer. Structure answers around situation, actions, principles, and outcome.</p>`,
+    articles:[A("An Elegant Puzzle","https://lethain.com/elegant-puzzle/"),A("The Manager's Path","https://www.oreilly.com/library/view/the-managers-path/9781491973882/")],
+    videos:[V("Leadership scenarios for EMs","https://www.youtube.com/results?search_query=engineering+manager+behavioral+interview")],
+    refs:[A("Rands in Repose","https://randsinrepose.com/archives/")],
+    lab:"Prepare STAR stories for 5 management scenarios (conflict, delivery risk, growth, hiring, change).",
+    proj:"Build a personal 'leadership story bank' mapped to common EM competencies.",
+    arch:"Map competencies (people, delivery, strategy, technical) to your stories.",
+    qa:[Q("Tell me about a time you resolved a conflict between two senior engineers.","(STAR) I'd describe listening to both privately to understand root causes, finding shared goals, facilitating a direct conversation with ground rules, and aligning on a decision with clear ownership — then following up. The outcome: restored collaboration and a lightweight decision process to prevent recurrence.")],
+    rev:["I have 5 STAR stories","I built a story bank","I mapped competencies"]
+  }
+]});
+
+/* ---------- WEEK 12 : Payments, Mastercard, Behavioral & Mock Interviews ---------- */
+WEEKS.push({
+  n:12, title:"Payments Domain, Mastercard & Final Prep", section:"Payments Domain",
+  summary:"Payments ecosystem, card networks, security/PCI, Mastercard-specific context, behavioral mastery, mock interviews and negotiation.",
+  days:[
+  {
+    t:"Payments Ecosystem & Transaction Lifecycle",
+    obj:["Map the payments value chain","Trace authorization→clearing→settlement","Know the key players"],
+    exp:`<p>A card transaction flows through: <b>cardholder → merchant → acquirer → network (Mastercard) → issuer</b>. Three phases: <b>authorization</b> (approve/decline in ms), <b>clearing</b> (exchange transaction details), <b>settlement</b> (actual money movement). The network routes and sets rules between banks.</p>`,
+    diagram:`<svg viewBox="0 0 660 130"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--faint)"/></marker></defs>
+    <rect class="svg-box" x="8" y="45" width="100" height="44" rx="8"/><text class="svg-t" x="30" y="72">Cardholder</text>
+    <line class="svg-line" x1="108" y1="67" x2="150" y2="67"/>
+    <rect class="svg-box2" x="150" y="45" width="90" height="44" rx="8"/><text class="svg-t" x="172" y="72">Merchant</text>
+    <line class="svg-line" x1="240" y1="67" x2="282" y2="67"/>
+    <rect class="svg-box2" x="282" y="45" width="90" height="44" rx="8"/><text class="svg-t" x="300" y="72">Acquirer</text>
+    <line class="svg-line" x1="372" y1="67" x2="414" y2="67"/>
+    <rect class="svg-box" x="414" y="40" width="110" height="54" rx="8"/><text class="svg-t" x="430" y="63">Mastercard</text><text class="svg-tm" x="440" y="80">Network</text>
+    <line class="svg-line" x1="524" y1="67" x2="566" y2="67"/>
+    <rect class="svg-box2" x="566" y="45" width="86" height="44" rx="8"/><text class="svg-t" x="592" y="72">Issuer</text></svg>`,
+    articles:[A("How card payments work","https://www.mastercard.us/en-us/business/overview/support/how-payments-work.html"),A("Payments 101","https://www.investopedia.com/terms/p/payment-gateway.asp")],
+    videos:[V("How Credit Card Payments Work — ByteByteGo","https://www.youtube.com/results?search_query=how+credit+card+payment+works+bytebytego")],
+    refs:[A("Mastercard Developers","https://developer.mastercard.com/")],
+    lab:"Trace a $50 card purchase through authorization, clearing, and settlement, naming each party.",
+    proj:"Map the payments platform you've built onto the real-world value chain.",
+    arch:"Diagram the four-party model and money/data flows.",
+    qa:[Q("Walk me through what happens when a card is swiped.","The merchant's POS sends an auth request via the acquirer to the network (Mastercard), which routes it to the issuer; the issuer checks funds/fraud and approves or declines in milliseconds. Later, clearing exchanges transaction records and settlement moves the actual funds between banks. The network provides routing, rules, and risk services.")],
+    rev:["I know the four-party model","I traced auth/clearing/settlement","I know the players"]
+  },
+  {
+    t:"Card Networks, ISO 8583 & Payment Rails",
+    obj:["Understand network switching","Know ISO 8583/20022","Compare payment rails"],
+    exp:`<p>Card networks act as a <b>switch</b> connecting thousands of banks with shared rules. Messaging traditionally uses <b>ISO 8583</b> (the card-transaction message standard), with <b>ISO 20022</b> emerging for richer data. Beyond cards, rails include ACH, RTP, wires, and instant payments.</p>`,
+    articles:[A("ISO 8583","https://en.wikipedia.org/wiki/ISO_8583"),A("ISO 20022","https://www.iso20022.org/")],
+    videos:[V("Payment rails explained","https://www.youtube.com/results?search_query=payment+rails+explained")],
+    refs:[A("Mastercard network","https://www.mastercard.com/global/en/business/overview.html")],
+    lab:"Study an ISO 8583 message structure and identify key data elements (MTI, PAN, amount).",
+    proj:"Design a message model for your platform inspired by ISO standards.",
+    arch:"Diagram the network as a switch between issuers and acquirers.",
+    qa:[Q("Why do card networks need a standard like ISO 8583?","Thousands of banks and processors must interoperate reliably; a shared message standard defines transaction structure so any issuer/acquirer can communicate. It's why the global system works. Newer ISO 20022 adds richer, structured data for better analytics and compliance.")],
+    rev:["I understand network switching","I know ISO 8583/20022","I compared rails"]
+  },
+  {
+    t:"Payment Security, PCI DSS, Fraud & Compliance",
+    obj:["Apply PCI DSS principles","Understand tokenization & 3DS","Reason about fraud/risk"],
+    exp:`<p>Handling card data requires <b>PCI DSS</b> compliance. Core techniques: <b>tokenization</b> (replace PAN with a token), <b>encryption</b> in transit/at rest, <b>3-D Secure</b> for authentication, and real-time <b>fraud scoring</b>. Minimize data you store; reduce PCI scope.</p>
+    <div class="callout warn"><b>Security requirement:</b> never log full PANs/CVVs; encrypt and tokenize sensitive data. This is table stakes at a payments company.</div>`,
+    articles:[A("PCI DSS overview","https://www.pcisecuritystandards.org/"),A("Tokenization","https://www.mastercard.us/en-us/business/overview/safety-and-security/tokenization.html")],
+    videos:[V("PCI DSS explained","https://www.youtube.com/results?search_query=pci+dss+explained")],
+    refs:[A("EMV 3-D Secure","https://www.emvco.com/emv-technologies/3d-secure/"),A("OWASP Top 10","https://owasp.org/www-project-top-ten/")],
+    lab:"Review your platform for PCI concerns: what data is stored, how it's protected, what to tokenize.",
+    proj:"Add tokenization + encryption to sensitive fields in the payments platform.",
+    arch:"Diagram tokenization reducing PCI scope.",
+    qa:[Q("How do you design a payment system to be secure and PCI compliant?","Minimize stored card data (tokenize, use a vault), encrypt in transit and at rest, enforce least-privilege access and strong authN/authZ, segment networks, add 3-D Secure and real-time fraud scoring, and continuously audit/monitor. I reduce PCI scope by never touching raw PANs where possible — the safest data is data you don't store.")],
+    rev:["I know PCI basics","I understand tokenization/3DS","I never log sensitive data"]
+  },
+  {
+    t:"Mastercard-Specific Preparation",
+    obj:["Know Mastercard's business & tech","Align to their values","Prepare company-specific answers"],
+    exp:`<p>Research Mastercard deeply: it's a <b>technology company in payments</b>, not a bank — revenue from processing, data/analytics, cybersecurity, and services. Know its priorities: security, scale, reliability, financial inclusion, and 'Priceless' brand. Align your examples to <b>real-time, secure, global-scale</b> systems and their leadership principles.</p>
+    <div class="callout tip"><b>Prep tip:</b> Prepare 2-3 stories that showcase building secure, highly available, large-scale systems and leading teams through ambiguity — Mastercard's core context.</div>`,
+    articles:[A("Mastercard company overview","https://www.mastercard.com/global/en/vision.html"),A("Mastercard newsroom/tech","https://www.mastercard.com/news/")],
+    videos:[V("Inside Mastercard technology","https://www.youtube.com/results?search_query=mastercard+technology+engineering")],
+    refs:[A("Mastercard careers/values","https://careers.mastercard.com/"),A("Mastercard Developers","https://developer.mastercard.com/")],
+    lab:"Research Mastercard's recent tech initiatives and write 3 talking points relevant to your role.",
+    proj:"Tailor your resume + story bank to Mastercard's scale, security, and reliability focus.",
+    arch:"Map your experience to Mastercard's engineering priorities.",
+    qa:[Q("Why do you want to work at Mastercard as an Engineering Manager?","I'm drawn to building mission-critical systems at global scale where reliability and security are paramount, and to Mastercard's identity as a technology company driving digital payments and inclusion. As an EM I want to lead teams solving hard distributed-systems and security problems that touch billions of transactions — high impact, high standards. (I'd personalize with a specific initiative I admire.)")],
+    rev:["I researched Mastercard","I have company-specific stories","I aligned my resume"]
+  },
+  {
+    t:"Behavioral Interview Mastery (STAR & Leadership)",
+    obj:["Structure answers with STAR","Cover leadership competencies","Convey impact & self-awareness"],
+    exp:`<p>Behavioral interviews probe past behavior as a predictor. Use <b>STAR</b> (Situation, Task, Action, Result) with quantified impact. Prepare stories across competencies: leadership, conflict, failure/learning, delivery under pressure, influence, and hiring/growth. Show self-awareness and what you learned.</p>`,
+    articles:[A("STAR method","https://www.themuse.com/advice/star-interview-method"),A("Amazon-style leadership behavioral prep","https://www.themuse.com/advice/behavioral-interview-questions-answers-examples")],
+    videos:[V("Behavioral interviews — Jeff H Sipe","https://www.youtube.com/results?search_query=behavioral+interview+manager+STAR")],
+    refs:[A("The STAR technique","https://www.indeed.com/career-advice/interviewing/how-to-use-the-star-interview-response-technique")],
+    lab:"Write and rehearse 8 STAR stories covering the core EM competencies with metrics.",
+    proj:"Record yourself answering 5 behavioral questions; refine for clarity and impact.",
+    arch:"Map each story to multiple competencies for reuse.",
+    qa:[Q("Tell me about a time you failed and what you learned.","(STAR) I'd pick a real failure — e.g., a launch that missed reliability targets because we underinvested in testing — take clear ownership, explain the concrete changes I drove (test strategy, staged rollout, blameless postmortem culture), and the improved outcome afterward. The point is accountability, learning, and systemic prevention, not blame.")],
+    rev:["I have 8 STAR stories","I quantify impact","I show self-awareness"]
+  },
+  {
+    t:"Full Mock Interview Day (Tech + System + Behavioral)",
+    obj:["Simulate the real loop","Get end-to-end feedback","Identify gaps"],
+    exp:`<p>Run a realistic loop under time pressure: a coding/technical round, a system-design round (e.g., design a payment system), and a behavioral/leadership round. Record, self-assess against a rubric, and note weak areas to revise.</p>`,
+    articles:[A("Mock interview guide","https://www.pramp.com/"),A("EM interview loop","https://blog.pragmaticengineer.com/")],
+    videos:[V("Mock system design interview — ByteByteGo","https://www.youtube.com/results?search_query=mock+system+design+interview")],
+    refs:[A("interviewing.io","https://interviewing.io/"),A("Pramp","https://www.pramp.com/")],
+    lab:"Complete a timed 3-round mock (technical, system design, behavioral) and score yourself.",
+    proj:"Compile a gap list from the mock and a targeted revision plan for remaining days.",
+    arch:"Diagram your interview-day plan and energy management.",
+    qa:[Q("How would you design Mastercard's real-time fraud detection at scale?","Ingest transactions via a streaming platform, compute real-time features (velocity, geolocation, spend patterns), score with ML models within the auth latency budget, and combine with rules for explainability. Ensure high availability (fraud can't be the bottleneck), feedback loops for model retraining, and full auditability. I'd anchor on the latency SLA, accuracy/false-positive trade-offs, and security throughout.")],
+    rev:["I did a full mock","I scored myself","I have a gap plan"]
+  },
+  {
+    t:"Resume, Salary Negotiation & Final Readiness",
+    obj:["Polish an EM-level resume","Negotiate compensation confidently","Finalize readiness"],
+    exp:`<p>An EM resume leads with <b>impact and scope</b> (team size, systems, business outcomes), not just tech. For <b>negotiation</b>: know your market value, let them anchor first, negotiate total comp (base, bonus, equity, sign-on), and stay collaborative. Do a final readiness self-assessment across every track.</p>
+    <div class="callout tip"><b>Negotiation mindset:</b> Negotiation is expected and professional. The number reflects the role's value, not your worth as a person — negotiate calmly on data.</div>`,
+    articles:[A("Salary negotiation — Kalzumeus","https://www.kalzumeus.com/2012/01/23/salary-negotiation/"),A("EM resume tips","https://www.levels.fyi/blog/")],
+    videos:[V("Salary negotiation — Patrick McKenzie ideas","https://www.youtube.com/results?search_query=salary+negotiation+software+engineer")],
+    refs:[A("levels.fyi (comp data)","https://www.levels.fyi/"),A("Glassdoor salaries","https://www.glassdoor.com/Salaries/index.htm")],
+    lab:"Rewrite your resume's top 3 bullets to lead with quantified impact and scope.",
+    proj:"Prepare your negotiation script + walk-away number, and complete the readiness meter.",
+    arch:"Map your total-comp targets (base/bonus/equity/sign-on).",
+    qa:[Q("How do you approach a compensation negotiation?","I research market data (levels.fyi, peers) to know a fair range, let the company anchor first, express genuine enthusiasm, and negotiate the total package collaboratively — base, bonus, equity, sign-on, start date. I anchor on the value I bring and stay positive; it's a business discussion, not a confrontation, and a well-run negotiation starts the relationship on mutual respect.")],
+    rev:["Resume leads with impact","I have a negotiation plan","Readiness meter complete"]
+  }
+]});
+</script>
+<script id="app-engine">
+/* ============================================================
+   APP ENGINE — state, routing, rendering, persistence
+   ============================================================ */
+(function(){
+  "use strict";
+
+  /* ---------- Flatten curriculum ---------- */
+  const DAYS = [];   // global day index (1..84)
+  WEEKS.forEach(w=>{
+    w.days.forEach((d,i)=>{
+      const globalDay = (w.n-1)*7 + (i+1);
+      d.id = "d"+globalDay;
+      d.gday = globalDay;
+      d.week = w.n;
+      d.dayInWeek = i+1;
+      d.section = w.section;
+      DAYS.push(d);
+    });
+  });
+  const TOTAL_DAYS = DAYS.length;
+  const TOTAL_HOURS_PER_DAY = 2.5;
+
+  const SECTIONS = [...new Set(WEEKS.map(w=>w.section))];
+
+  /* ---------- State / persistence ---------- */
+  const LS_KEY = "mc_swe_handbook_v1";
+  const defaultState = ()=>({
+    done:{}, notes:{}, bookmarks:{}, checks:{},
+    status:{},             // dayId -> "must" | "wip" | "skip"
+    completedAt:{},        // dayId -> ISO date
+    theme:"dark",
+    stats:{ videos:{}, articles:{}, projects:{}, questions:{}, mocks:0 }
+  });
+  let S = load();
+
+  function load(){
+    try{ const raw = localStorage.getItem(LS_KEY); if(raw) return Object.assign(defaultState(), JSON.parse(raw)); }catch(e){}
+    return defaultState();
+  }
+  function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){ toast("Storage unavailable"); } }
+
+  /* ---------- Helpers ---------- */
+  const $ = s=>document.querySelector(s);
+  const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+  const esc = s=> (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const doneCount = ()=> Object.values(S.done).filter(Boolean).length;
+  const pct = ()=> Math.round(doneCount()/TOTAL_DAYS*100);
+  function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
+
+  function streak(){
+    const dates = Object.values(S.completedAt).map(d=>d.slice(0,10));
+    if(!dates.length) return 0;
+    const set = new Set(dates);
+    let s=0; let d=new Date();
+    // allow today or yesterday to start the streak
+    const iso = x=>x.toISOString().slice(0,10);
+    if(!set.has(iso(d))){ d.setDate(d.getDate()-1); if(!set.has(iso(d))) return 0; }
+    while(set.has(iso(d))){ s++; d.setDate(d.getDate()-1); }
+    return s;
+  }
+
+  /* ---------- Section icons ---------- */
+  const SECICON = {"Java":"☕","Spring Boot":"🌱","SQL & Performance":"🗄️","Microservices":"🧩","Kafka":"📨",
+    "Kubernetes":"☸️","AWS":"☁️","Big Data":"📊","System Design":"🏗️","Engineering Management":"👥","Payments Domain":"💳"};
+  const secIcon = s=> SECICON[s] || "📘";
+
+  /* ---------- Reading-list status ---------- */
+  const STATUS = {
+    must:{ label:"Must read", short:"Must read", icon:"📕", chip:"red" },
+    wip: { label:"In progress", short:"WIP", icon:"🚧", chip:"yellow" },
+    skip:{ label:"Skip", short:"Skip", icon:"⏭️", chip:"" }
+  };
+  const STATUS_ORDER = ["must","wip","skip"];
+  function setStatus(id, st){
+    if(S.status[id]===st) delete S.status[id]; else S.status[id]=st;
+    save(); updateBadges();
+  }
+  function statusChip(id){
+    const st = S.status[id]; if(!st||!STATUS[st]) return "";
+    return `<span class="chip ${STATUS[st].chip}" title="${STATUS[st].label}">${STATUS[st].icon} ${STATUS[st].short}</span>`;
+  }
+
+  /* ============================================================
+     ROUTER
+     ============================================================ */
+  const routes = {};
+  function route(name, fn){ routes[name]=fn; }
+  function go(name, arg){
+    location.hash = "#/"+name + (arg!=null? "/"+arg : "");
+  }
+  function render(){
+    const parts = (location.hash.replace(/^#\//,"")||"dashboard").split("/");
+    const name = parts[0]||"dashboard";
+    const arg = parts[1];
+    const fn = routes[name] || routes.dashboard;
+    const view = $("#view");
+    view.innerHTML="";
+    fn(view, arg);
+    // active nav
+    document.querySelectorAll(".nav .item").forEach(a=>a.classList.toggle("active", a.dataset.route===name));
+    updateBadges();
+    window.scrollTo(0,0);
+    closeSidebar();
+  }
+  window.addEventListener("hashchange", render);
+
+  function updateBadges(){
+    $("#nav-days").textContent = doneCount()+"/"+TOTAL_DAYS;
+    $("#nav-bm").textContent = Object.keys(S.bookmarks).filter(k=>S.bookmarks[k]).length;
+    $("#nav-rl").textContent = Object.keys(S.status).filter(k=>S.status[k]).length;
+  }
+
+  /* ============================================================
+     DASHBOARD
+     ============================================================ */
+  route("dashboard", (v)=>{
+    const p = pct();
+    const done = doneCount();
+    const hours = (done*TOTAL_HOURS_PER_DAY);
+    const nextDay = DAYS.find(d=>!S.done[d.id]) || DAYS[DAYS.length-1];
+    const readiness = readinessScore();
+
+    v.appendChild(el("div","page-head",`
+      <span class="eyebrow">Manager Software Engineering · Mastercard</span>
+      <h2>Welcome back 👋</h2>
+      <p>Your offline preparation cockpit — ${TOTAL_DAYS} study days across 12 weeks. Keep the streak alive.</p>`));
+
+    const stats = el("div","grid c4"); stats.style.marginBottom="18px";
+    stats.appendChild(statCard("Overall progress", p+"<small>%</small>", "📈", "rgba(255,95,0,.15)"));
+    stats.appendChild(statCard("Days completed", done+`<small>/${TOTAL_DAYS}</small>`, "✅", "rgba(63,185,80,.15)"));
+    stats.appendChild(statCard("Hours studied", hours.toFixed(1)+"<small>h</small>", "⏱️", "rgba(79,140,255,.15)"));
+    stats.appendChild(statCard("Current streak", streak()+"<small> days</small>", "🔥", "rgba(227,179,65,.15)"));
+    v.appendChild(stats);
+
+    // progress + resume
+    const row = el("div","grid c2"); row.style.marginBottom="18px";
+    const prog = el("div","card");
+    prog.innerHTML = `<div class="stat"><div class="k">📚 Curriculum completion</div></div>
+      <div style="display:flex;align-items:center;gap:20px;margin-top:14px">
+        <div class="ring" style="--p:${p}"><div class="rc"><b>${p}%</b><span>${done}/${TOTAL_DAYS} days</span></div></div>
+        <div style="flex:1">
+          <div class="progress"><i style="width:${p}%"></i></div>
+          <p style="color:var(--muted);font-size:13px;margin:12px 0 0">You've completed <b>${done}</b> lessons. ${TOTAL_DAYS-done} to go to full readiness.</p>
+        </div>
+      </div>`;
+    row.appendChild(prog);
+
+    const resume = el("div","card");
+    resume.innerHTML = `<div class="stat"><div class="k">▶️ Resume where you left off</div></div>
+      <div style="margin-top:14px">
+        <div class="chip brand">${secIcon(nextDay.section)} ${esc(nextDay.section)}</div>
+        <div class="chip">Week ${nextDay.week} · Day ${nextDay.dayInWeek}</div>
+        <h3 style="margin:12px 0 4px;font-size:17px">${esc(nextDay.t)}</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 14px">${esc(nextDay.obj[0])}</p>
+        <button class="btn primary" data-open="${nextDay.id}">Continue Day ${nextDay.gday} →</button>
+      </div>`;
+    row.appendChild(resume);
+    v.appendChild(row);
+
+    // readiness + weeks overview
+    const rd = el("div","card"); rd.style.marginBottom="18px";
+    rd.innerHTML = `<div class="stat"><div class="k">🎯 Interview readiness meter</div></div>
+      <div style="margin-top:12px" class="progress"><i style="width:${readiness}%"></i></div>
+      <p style="color:var(--muted);font-size:13px;margin:10px 0 0">${readinessLabel(readiness)} · <b>${readiness}%</b> ready. <a data-nav="readiness">See breakdown →</a></p>`;
+    v.appendChild(rd);
+
+    v.appendChild(el("div","page-head",`<h2 style="font-size:19px">12-Week Roadmap</h2>`));
+    const wg = el("div","grid c3");
+    WEEKS.forEach(w=>{
+      const wd = w.days.filter(d=>S.done[d.id]).length;
+      const wp = Math.round(wd/w.days.length*100);
+      const c = el("div","card hover"); c.style.cursor="pointer"; c.dataset.week=w.n;
+      c.innerHTML = `<div class="chip brand">${secIcon(w.section)} Week ${w.n}</div>
+        <h3 style="margin:11px 0 5px;font-size:15px">${esc(w.title)}</h3>
+        <p style="color:var(--muted);font-size:12.5px;margin:0 0 12px;min-height:34px">${esc(w.summary.slice(0,90))}…</p>
+        <div class="progress"><i style="width:${wp}%"></i></div>
+        <small style="color:var(--muted);display:block;margin-top:7px">${wd}/${w.days.length} days · ${wp}%</small>`;
+      c.addEventListener("click",()=>{ openWeek=w.n; go("curriculum"); });
+      wg.appendChild(c);
+    });
+    v.appendChild(wg);
+  });
+
+  function statCard(k,v,ic,bg){
+    const c = el("div","card");
+    c.innerHTML = `<div class="stat">
+      <div class="ic" style="background:${bg}">${ic}</div>
+      <div class="k">${k}</div><div class="v">${v}</div></div>`;
+    c.querySelector(".ic").style.marginBottom="6px";
+    return c;
+  }
+
+  /* ============================================================
+     CURRICULUM
+     ============================================================ */
+  let openWeek = 1;
+  route("curriculum", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Curriculum</h2><p>12 weeks · ${TOTAL_DAYS} days · blended technical, management & payments every day.</p>`));
+
+    // filters
+    const fb = el("div","filterbar");
+    const allChip = el("span","chip on","All tracks"); allChip.dataset.sec="all"; fb.appendChild(allChip);
+    SECTIONS.forEach(s=>{ const c=el("span","chip",`${secIcon(s)} ${s}`); c.dataset.sec=s; fb.appendChild(c); });
+    v.appendChild(fb);
+    let filter = "all";
+    fb.addEventListener("click",e=>{
+      const chip = e.target.closest(".chip"); if(!chip) return;
+      filter = chip.dataset.sec;
+      fb.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on", c===chip));
+      draw();
+    });
+
+    const wrap = el("div"); v.appendChild(wrap);
+    function draw(){
+      wrap.innerHTML="";
+      WEEKS.filter(w=> filter==="all" || w.section===filter).forEach(w=>{
+        const wd = w.days.filter(d=>S.done[d.id]).length;
+        const wp = Math.round(wd/w.days.length*100);
+        const block = el("div","week-block"+(w.n===openWeek?" open":""));
+        const head = el("div","week-head",`
+          <div class="wn">${w.n}</div>
+          <div style="flex:1;min-width:0">
+            <h3>${esc(w.title)} <span class="chip">${secIcon(w.section)} ${esc(w.section)}</span></h3>
+            <p>${esc(w.summary)}</p>
+          </div>
+          <div class="wp"><div class="progress"><i style="width:${wp}%"></i></div><small>${wd}/${w.days.length} · ${wp}%</small></div>
+          <span class="caret">▶</span>`);
+        head.addEventListener("click",()=>{ block.classList.toggle("open"); if(block.classList.contains("open")) openWeek=w.n; });
+        block.appendChild(head);
+        const days = el("div","week-days");
+        w.days.forEach(d=>{
+          const done = !!S.done[d.id];
+          const r = el("div","day-row"+(done?" done":""));
+          r.innerHTML = `<div class="dnum">${d.gday}</div>
+            <div class="dt"><b>${esc(d.t)}</b><small>Day ${d.dayInWeek} · ${d.obj.length} objectives · ${d.qa.length} interview Q</small></div>
+            ${statusChip(d.id)}
+            ${S.bookmarks[d.id]?'<span title="Bookmarked">🔖</span>':''}
+            <span class="dcheck">${done?"✓":"○"}</span>`;
+          r.addEventListener("click",()=>openDay(d.id));
+          days.appendChild(r);
+        });
+        block.appendChild(days);
+        wrap.appendChild(block);
+      });
+    }
+    draw();
+  });
+
+  /* ============================================================
+     LESSON / DAY VIEW
+     ============================================================ */
+  function openDay(id){ go("day", id.replace("d","")); }
+  route("day", (v, arg)=>{
+    const d = DAYS.find(x=>x.gday==arg) || DAYS[0];
+    const idx = DAYS.indexOf(d);
+    const done = !!S.done[d.id];
+    const bm = !!S.bookmarks[d.id];
+
+    // nav
+    const nav = el("div","lesson-nav");
+    const back = el("button","btn ghost","← Curriculum"); back.onclick=()=>go("curriculum");
+    const rightNav = el("div"); rightNav.style.display="flex"; rightNav.style.gap="8px";
+    const prev = el("button","btn","‹ Prev"); prev.disabled=idx===0; prev.onclick=()=>openDay(DAYS[idx-1].id);
+    const next = el("button","btn","Next ›"); next.disabled=idx===DAYS.length-1; next.onclick=()=>openDay(DAYS[idx+1].id);
+    rightNav.append(prev,next);
+    nav.append(back, rightNav);
+    v.appendChild(nav);
+
+    // hero
+    const hero = el("div","lesson-hero");
+    hero.innerHTML = `
+      <div class="chip brand">${secIcon(d.section)} ${esc(d.section)}</div>
+      <div class="chip">Week ${d.week} · Day ${d.dayInWeek}</div>
+      <div class="chip blue">Day ${d.gday} of ${TOTAL_DAYS}</div>
+      <h2>${esc(d.t)}</h2>
+      <div class="meta">
+        <button class="btn ${done?'':'primary'}" id="toggleDone">${done?'✓ Completed':'Mark complete'}</button>
+        <button class="btn" id="toggleBm">${bm?'🔖 Bookmarked':'🔖 Bookmark'}</button>
+        <button class="btn ghost no-print" id="printDay">🖨️ Print</button>
+      </div>
+      <div class="meta" style="margin-top:8px">
+        <span style="align-self:center;color:var(--muted);font-size:12px;font-weight:600;margin-right:2px">Reading list:</span>
+        ${STATUS_ORDER.map(k=>`<button class="btn statusBtn ${S.status[d.id]===k?'primary':''}" data-status="${k}">${STATUS[k].icon} ${STATUS[k].short}</button>`).join("")}
+      </div>`;
+    v.appendChild(hero);
+    hero.querySelector("#toggleDone").onclick=()=>{ toggleDone(d); openDay(d.id); };
+    hero.querySelector("#toggleBm").onclick=()=>{ S.bookmarks[d.id]=!S.bookmarks[d.id]; save(); toast(S.bookmarks[d.id]?"Bookmarked":"Removed"); openDay(d.id); };
+    hero.querySelector("#printDay").onclick=()=>window.print();
+    hero.querySelectorAll(".statusBtn").forEach(b=>b.onclick=()=>{
+      const st = b.dataset.status;
+      setStatus(d.id, st);
+      toast(S.status[d.id]?`Marked "${STATUS[st].label}"`:"Removed from reading list");
+      openDay(d.id);
+    });
+
+    // Objectives
+    v.appendChild(section("🎯","Learning objectives",
+      `<ul class="prose">${d.obj.map(o=>`<li>${esc(o)}</li>`).join("")}</ul>`));
+
+    // Explanation + diagram
+    let expHtml = d.exp;
+    if(d.diagram) expHtml += `<div class="diagram">${d.diagram}</div>`;
+    v.appendChild(section("📖","Detailed explanation", `<div class="prose">${expHtml}</div>`));
+
+    // Resources
+    v.appendChild(section("🔗","Curated articles", reslist(d.articles,"📄","rgba(79,140,255,.15)")));
+    v.appendChild(section("▶️","Curated videos", reslist(d.videos,"🎬","rgba(248,81,73,.15)")));
+    v.appendChild(section("📚","Official references", reslist(d.refs,"📘","rgba(63,185,80,.15)")));
+
+    // Hands-on
+    v.appendChild(section("🧪","Hands-on lab", `<div class="prose"><p>${d.lab}</p></div>`));
+    v.appendChild(section("🚀","Mini project", `<div class="prose"><p>${d.proj}</p></div>`));
+    v.appendChild(section("🏗️","Architecture exercise", `<div class="prose"><p>${d.arch}</p></div>`));
+
+    // Interview Q&A
+    const qaWrap = el("div");
+    d.qa.forEach((qa,i)=>{
+      const q = el("div","qa");
+      q.innerHTML = `<div class="q"><span class="qn">Q${i+1}</span><span>${esc(qa.q)}</span></div>
+        <div class="a"><div class="lvl">${esc(qa.lvl)}</div>${esc(qa.a)}</div>`;
+      q.querySelector(".q").onclick=()=>q.classList.toggle("open");
+      qaWrap.appendChild(q);
+    });
+    v.appendChild(section("💬","Interview questions & manager-level answers", qaWrap.outerHTML));
+    // rebind (outerHTML lost listeners)
+    v.querySelectorAll(".qa .q").forEach(q=>q.onclick=()=>q.parentElement.classList.toggle("open"));
+
+    // Revision checklist
+    const clWrap = el("div","checklist");
+    d.rev.forEach((r,i)=>{
+      const key = d.id+"_rev"+i;
+      const checked = !!S.checks[key];
+      const item = el("div","cl-item"+(checked?" checked":""));
+      item.innerHTML = `<span class="box">✓</span><span>${esc(r)}</span>`;
+      item.onclick=()=>{ S.checks[key]=!S.checks[key]; save(); item.classList.toggle("checked"); };
+      clWrap.appendChild(item);
+    });
+    v.appendChild(section("✅","Revision checklist", clWrap.outerHTML));
+    // rebind checklist
+    const clItems = v.querySelectorAll(".cl-item");
+    clItems.forEach((item,i)=>{
+      const key = d.id+"_rev"+i;
+      item.onclick=()=>{ S.checks[key]=!S.checks[key]; save(); item.classList.toggle("checked"); };
+    });
+
+    // Notes
+    const notesBox = el("div","section-block");
+    notesBox.innerHTML = `<h3><span class="si2">📝</span> My notes (saved locally)</h3>`;
+    const ta = el("textarea","notes-area"); ta.placeholder="Write your notes, insights, and questions for this day…";
+    ta.value = S.notes[d.id]||"";
+    let tmr; ta.addEventListener("input",()=>{ clearTimeout(tmr); tmr=setTimeout(()=>{ S.notes[d.id]=ta.value; save(); },500); });
+    notesBox.appendChild(ta);
+    v.appendChild(notesBox);
+
+    // completion footer
+    const foot = el("div","card no-print"); foot.style.textAlign="center"; foot.style.marginTop="10px";
+    foot.innerHTML = `<p style="margin:0 0 12px;color:var(--muted)">Finished this day's material?</p>`;
+    const fbtn = el("button","btn primary", done?"✓ Completed — Next day ›":"Mark complete & continue →");
+    fbtn.onclick=()=>{ if(!done) toggleDone(d); if(idx<DAYS.length-1) openDay(DAYS[idx+1].id); else go("dashboard"); };
+    foot.appendChild(fbtn);
+    v.appendChild(foot);
+  });
+
+  function section(icon,title,inner){
+    const s = el("div","section-block");
+    s.innerHTML = `<h3><span class="si2">${icon}</span> ${title}</h3>${inner}`;
+    return s;
+  }
+  function reslist(items,icon,bg){
+    if(!items||!items.length) return `<p class="prose" style="color:var(--muted)">None listed.</p>`;
+    return `<div class="reslist">${items.map(r=>`
+      <a class="reslink" href="${r.u}" target="_blank" rel="noopener">
+        <span class="ri" style="background:${bg}">${icon}</span>
+        <span class="rt"><b>${esc(r.t)}</b><small>${esc(r.u)}</small></span>
+        <span class="rgo">↗</span></a>`).join("")}</div>`;
+  }
+
+  function toggleDone(d){
+    S.done[d.id]=!S.done[d.id];
+    if(S.done[d.id]){ S.completedAt[d.id]=new Date().toISOString(); toast("Day "+d.gday+" complete! 🎉"); }
+    else { delete S.completedAt[d.id]; }
+    save(); updateBadges();
+  }
+
+  /* ============================================================
+     CALENDAR
+     ============================================================ */
+  route("calendar", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Study Calendar</h2><p>Your 12-week plan laid out as ${TOTAL_DAYS} study days. Tap a day to open it.</p>`));
+    WEEKS.forEach(w=>{
+      const block = el("div","card"); block.style.marginBottom="16px";
+      block.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="chip brand">${secIcon(w.section)} Week ${w.n}</div>
+        <b style="font-size:14px">${esc(w.title)}</b></div>`;
+      const cal = el("div","cal");
+      w.days.forEach(d=>{
+        const done = !!S.done[d.id];
+        const cd = el("div","cd"+(done?" done":""));
+        cd.innerHTML = `<b>Day ${d.dayInWeek}</b><span class="dn">${d.gday}</span>`;
+        cd.title = d.t;
+        cd.onclick=()=>openDay(d.id);
+        cal.appendChild(cd);
+      });
+      block.appendChild(cal);
+      v.appendChild(block);
+    });
+    const leg = el("div","cal-legend");
+    leg.innerHTML = `<span>✓ Completed</span><span>○ Pending</span><span>🔥 Streak: ${streak()} days</span>`;
+    v.appendChild(leg);
+  });
+
+  /* ============================================================
+     ANALYTICS
+     ============================================================ */
+  route("analytics", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Progress Analytics</h2><p>Track your journey across every dimension.</p>`));
+    const done = doneCount();
+    const g = el("div","grid c4"); g.style.marginBottom="18px";
+    g.appendChild(statCard("Days completed", done+`<small>/${TOTAL_DAYS}</small>`,"✅","rgba(63,185,80,.15)"));
+    g.appendChild(statCard("Hours studied",(done*TOTAL_HOURS_PER_DAY).toFixed(1)+"<small>h</small>","⏱️","rgba(79,140,255,.15)"));
+    g.appendChild(statCard("Interview Q reviewed", countQA()+"<small> avail</small>","💬","rgba(163,113,247,.15)"));
+    g.appendChild(statCard("Notes written", Object.values(S.notes).filter(n=>n&&n.trim()).length+"","📝","rgba(227,179,65,.15)"));
+    v.appendChild(g);
+
+    // per-track progress bars
+    const card = el("div","card"); card.style.marginBottom="18px";
+    card.innerHTML = `<h3 style="margin:0 0 16px;font-size:16px">Progress by track</h3>`;
+    const bars = el("div","bars");
+    WEEKS.forEach(w=>{
+      const wd = w.days.filter(d=>S.done[d.id]).length;
+      const wp = Math.round(wd/w.days.length*100);
+      const row = el("div","bar-row");
+      row.innerHTML = `<div class="bl"><span>${secIcon(w.section)} W${w.n} · ${esc(w.title)}</span><b>${wp}%</b></div>
+        <div class="progress"><i style="width:${wp}%"></i></div>`;
+      bars.appendChild(row);
+    });
+    card.appendChild(bars);
+    v.appendChild(card);
+
+    // completion timeline (last 14 active days)
+    const tl = el("div","card");
+    tl.innerHTML = `<h3 style="margin:0 0 16px;font-size:16px">Recent activity</h3>`;
+    const entries = Object.entries(S.completedAt).sort((a,b)=>b[1].localeCompare(a[1])).slice(0,12);
+    if(!entries.length){ tl.appendChild(el("p","",`<span style="color:var(--muted)">Complete a day to see activity here.</span>`)); }
+    else entries.forEach(([id,ts])=>{
+      const d = DAYS.find(x=>x.id===id); if(!d) return;
+      const row = el("div"); row.style.cssText="display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)";
+      row.innerHTML = `<span class="chip green">✓ Day ${d.gday}</span><b style="font-size:13px;flex:1">${esc(d.t)}</b>
+        <small style="color:var(--muted)">${new Date(ts).toLocaleDateString()}</small>`;
+      tl.appendChild(row);
+    });
+    v.appendChild(tl);
+  });
+  function countQA(){ return DAYS.reduce((n,d)=>n+d.qa.length,0); }
+
+  /* ============================================================
+     READINESS
+     ============================================================ */
+  function readinessScore(){
+    // weighted: overall completion 60%, checklist depth 25%, notes engagement 15%
+    const comp = doneCount()/TOTAL_DAYS;
+    const totalChecks = DAYS.reduce((n,d)=>n+d.rev.length,0);
+    const doneChecks = Object.values(S.checks).filter(Boolean).length;
+    const chk = totalChecks? doneChecks/totalChecks : 0;
+    const noted = Object.values(S.notes).filter(n=>n&&n.trim()).length / TOTAL_DAYS;
+    return Math.round((comp*0.6 + chk*0.25 + Math.min(noted,1)*0.15)*100);
+  }
+  function readinessLabel(r){ return r>=85?"Interview ready 🚀":r>=60?"Nearly there":r>=30?"Building momentum":"Just getting started"; }
+
+  route("readiness", (v)=>{
+    const r = readinessScore();
+    v.appendChild(el("div","page-head",`<h2>Interview Readiness Meter</h2><p>A weighted signal from completion, revision depth, and note-taking.</p>`));
+    const top = el("div","card"); top.style.marginBottom="18px";
+    top.innerHTML = `<div class="readiness">
+        <div class="ring" style="--p:${r};--sz:170px"><div class="rc"><b>${r}%</b><span>${readinessLabel(r)}</span></div></div>
+        <div class="bars">
+          ${barRow("Curriculum completion", Math.round(doneCount()/TOTAL_DAYS*100))}
+          ${barRow("Revision checklist depth", pctChecks())}
+          ${barRow("Note-taking engagement", Math.round(Object.values(S.notes).filter(n=>n&&n.trim()).length/TOTAL_DAYS*100))}
+        </div>
+      </div>`;
+    v.appendChild(top);
+
+    // readiness by competency area
+    const areas = [
+      ["Technical (Java, Spring, Data)", [1,2,3,4]],
+      ["Distributed systems (MS, Kafka, K8s, Cloud)", [5,6,7,8]],
+      ["Data & System design", [9,10]],
+      ["Management & leadership", [11]],
+      ["Payments, behavioral & interview", [12]]
+    ];
+    const card = el("div","card");
+    card.innerHTML = `<h3 style="margin:0 0 16px;font-size:16px">Readiness by competency</h3>`;
+    const bars = el("div","bars");
+    areas.forEach(([name,weeks])=>{
+      const days = DAYS.filter(d=>weeks.includes(d.week));
+      const dd = days.filter(d=>S.done[d.id]).length;
+      const p = Math.round(dd/days.length*100);
+      bars.appendChild(el("div","bar-row",`<div class="bl"><span>${esc(name)}</span><b>${p}%</b></div><div class="progress"><i style="width:${p}%"></i></div>`));
+    });
+    card.appendChild(bars);
+    v.appendChild(card);
+
+    const tip = el("div","callout tip"); tip.style.marginTop="16px";
+    tip.innerHTML = `<b>Tip:</b> To raise your score, complete daily lessons, tick revision checklists, and capture notes for each day. Aim for 85%+ before your interview loop.`;
+    v.appendChild(tip);
+  });
+  function barRow(label,p){ return `<div class="bar-row"><div class="bl"><span>${label}</span><b>${p}%</b></div><div class="progress"><i style="width:${p}%"></i></div></div>`; }
+  function pctChecks(){ const t=DAYS.reduce((n,d)=>n+d.rev.length,0); const c=Object.values(S.checks).filter(Boolean).length; return t?Math.round(c/t*100):0; }
+
+  /* ============================================================
+     TRACKS (dedicated sections)
+     ============================================================ */
+  route("tracks", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Dedicated Tracks</h2><p>Jump straight to a technology or competency area.</p>`));
+    const topics = [
+      ["Java Mastery","Java",[1,2]],["Spring Boot / Security / JPA","Spring Boot",[3]],
+      ["SQL & Performance","SQL & Performance",[4]],["Microservices","Microservices",[5]],
+      ["Kafka & Event-Driven","Kafka",[6]],["Docker & Kubernetes","Kubernetes",[7]],
+      ["AWS · Terraform · CI/CD","AWS",[8]],["Big Data (Spark/Hadoop/Cloudera)","Big Data",[9]],
+      ["System Design & Patterns","System Design",[10]],["Engineering Management","Engineering Management",[11]],
+      ["Payments · Mastercard · Behavioral","Payments Domain",[12]]
+    ];
+    const g = el("div","grid c3");
+    topics.forEach(([name,sec,weeks])=>{
+      const days = DAYS.filter(d=>weeks.includes(d.week));
+      const dd = days.filter(d=>S.done[d.id]).length;
+      const p = Math.round(dd/days.length*100);
+      const c = el("div","card hover"); c.style.cursor="pointer";
+      c.innerHTML = `<div class="ic" style="font-size:26px;margin-bottom:8px">${secIcon(sec)}</div>
+        <h3 style="margin:0 0 4px;font-size:15px">${esc(name)}</h3>
+        <p style="color:var(--muted);font-size:12px;margin:0 0 12px">${days.length} days · ${dd} done</p>
+        <div class="progress"><i style="width:${p}%"></i></div>`;
+      c.onclick=()=>openDay(days[0].id);
+      g.appendChild(c);
+    });
+    v.appendChild(g);
+  });
+
+  /* ============================================================
+     BOOKMARKS
+     ============================================================ */
+  route("bookmarks", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Bookmarks</h2><p>Days you've flagged to revisit.</p>`));
+    const marked = DAYS.filter(d=>S.bookmarks[d.id]);
+    if(!marked.length){ v.appendChild(emptyState("🔖","No bookmarks yet","Open any day and tap Bookmark to save it here.")); return; }
+    marked.forEach(d=>v.appendChild(dayListCard(d)));
+  });
+
+  /* ============================================================
+     READING LIST  (Must read / WIP / Skip)
+     ============================================================ */
+  route("readinglist", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Reading List</h2><p>Days you've labelled <b>Must read</b>, <b>WIP</b> or <b>Skip</b>. Set labels from any lesson, or with the buttons on each card below.</p>`));
+
+    const total = DAYS.filter(d=>S.status[d.id]).length;
+    if(!total){ v.appendChild(emptyState("🗂️","Your reading list is empty","Open any day and label it Must read, WIP or Skip — it'll show up here, grouped by label.")); return; }
+
+    STATUS_ORDER.forEach(st=>{
+      const days = DAYS.filter(d=>S.status[d.id]===st);
+      if(!days.length) return;
+      const head = el("div"); head.style.cssText="display:flex;align-items:center;gap:10px;margin:22px 0 12px";
+      head.innerHTML = `<span class="chip ${STATUS[st].chip}" style="font-size:13px">${STATUS[st].icon} ${STATUS[st].label}</span>
+        <span style="color:var(--muted);font-size:13px">${days.length} day${days.length>1?'s':''}</span>`;
+      v.appendChild(head);
+      days.forEach(d=>v.appendChild(dayListCard(d,true)));
+    });
+  });
+
+  /* ============================================================
+     NOTES
+     ============================================================ */
+  route("notes", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>My Notes</h2><p>Everything you've written, in one place. Stored locally in your browser.</p>`));
+    const noted = DAYS.filter(d=>S.notes[d.id] && S.notes[d.id].trim());
+    if(!noted.length){ v.appendChild(emptyState("📝","No notes yet","Open a day and write notes — they'll appear here.")); return; }
+    noted.forEach(d=>{
+      const c = el("div","card"); c.style.marginBottom="12px"; c.style.cursor="pointer";
+      c.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <span class="chip brand">${secIcon(d.section)} W${d.week}·D${d.dayInWeek}</span>
+        <b style="font-size:14px">${esc(d.t)}</b></div>
+        <p style="color:var(--muted);font-size:13px;margin:0;white-space:pre-wrap">${esc(S.notes[d.id]).slice(0,280)}${S.notes[d.id].length>280?'…':''}</p>`;
+      c.onclick=()=>openDay(d.id);
+      v.appendChild(c);
+    });
+  });
+
+  /* ============================================================
+     INTERVIEW BANK
+     ============================================================ */
+  route("interview", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Interview Question Bank</h2><p>Every question across the curriculum with manager-level answers — ${countQA()} in total.</p>`));
+    const fb = el("div","filterbar");
+    const all = el("span","chip on","All"); all.dataset.sec="all"; fb.appendChild(all);
+    SECTIONS.forEach(s=>{ const c=el("span","chip",`${secIcon(s)} ${s}`); c.dataset.sec=s; fb.appendChild(c); });
+    v.appendChild(fb);
+    const wrap = el("div"); v.appendChild(wrap);
+    let filter="all";
+    function draw(){
+      wrap.innerHTML="";
+      let n=0;
+      DAYS.filter(d=>filter==="all"||d.section===filter).forEach(d=>{
+        d.qa.forEach(qa=>{
+          n++;
+          const q = el("div","qa");
+          q.innerHTML = `<div class="q"><span class="qn">${secIcon(d.section)}</span><span>${esc(qa.q)}<br><small style="color:var(--muted);font-weight:400">Week ${d.week} · ${esc(d.t)}</small></span></div>
+            <div class="a"><div class="lvl">${esc(qa.lvl)}</div>${esc(qa.a)}</div>`;
+          q.querySelector(".q").onclick=()=>q.classList.toggle("open");
+          wrap.appendChild(q);
+        });
+      });
+      if(!n) wrap.appendChild(emptyState("💬","No questions","Try another filter."));
+    }
+    fb.addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(!c)return; filter=c.dataset.sec; fb.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===c)); draw(); });
+    draw();
+  });
+
+  /* ============================================================
+     RESUME & NEGOTIATION
+     ============================================================ */
+  route("resume", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>Resume & Salary Negotiation</h2><p>Manager-level positioning and compensation strategy.</p>`));
+    const cards = [
+      ["📄 EM Resume Principles",[
+        "Lead each bullet with <b>impact and scope</b> (team size, systems, business outcome) — not just tech used.",
+        "Quantify: 'Led 8 engineers to cut incident rate 40% and ship a payments platform handling 5k TPS.'",
+        "Show the arc: technical depth → leadership → business results.",
+        "Tailor to Mastercard: scale, security, reliability, real-time payments.",
+        "Keep it to 1–2 pages, clean formatting, ATS-friendly."]],
+      ["💰 Salary Negotiation Playbook",[
+        "Research market value first (levels.fyi, Glassdoor, peers) — know your range.",
+        "Let the employer anchor the number first when you can.",
+        "Negotiate <b>total compensation</b>: base, bonus, equity, sign-on, start date.",
+        "Stay collaborative and enthusiastic — it's a business discussion, not a fight.",
+        "Have a walk-away number and a target; get the final offer in writing."]],
+      ["🎯 Mastercard Positioning",[
+        "Frame yourself around building secure, highly available, global-scale systems.",
+        "Prepare 2–3 stories on leading teams through ambiguity and delivering reliably.",
+        "Know Mastercard is a technology company — payments, data, cybersecurity, services.",
+        "Connect your work to their priorities: security, resilience, financial inclusion.",
+        "Ask thoughtful questions about their platform scale and engineering culture."]]
+    ];
+    cards.forEach(([title,items])=>{
+      const c = el("div","card"); c.style.marginBottom="16px";
+      c.innerHTML = `<h3 style="margin:0 0 12px;font-size:16px">${title}</h3>
+        <ul class="prose">${items.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+      v.appendChild(c);
+    });
+    v.appendChild(el("div","callout tip",`<b>Day 84</b> covers this in depth with interview Q&A. <a data-open="d84">Open the negotiation lesson →</a>`));
+  });
+
+  /* ============================================================
+     ABOUT
+     ============================================================ */
+  route("about", (v)=>{
+    v.appendChild(el("div","page-head",`<h2>How to use this handbook</h2><p>A self-contained, offline learning portal.</p>`));
+    const c = el("div","card");
+    c.innerHTML = `<div class="prose">
+      <h4>📌 Daily routine (2–3 hrs)</h4>
+      <ul>
+        <li>Open today's day from the <b>Dashboard</b> "Resume" card or the <b>Curriculum</b>.</li>
+        <li>Read objectives → detailed explanation → work the lab & mini project.</li>
+        <li>Study the curated articles/videos/references (opens in your browser).</li>
+        <li>Reveal the interview questions and rehearse the manager-level answers.</li>
+        <li>Tick the revision checklist, write notes, then <b>Mark complete</b>.</li>
+      </ul>
+      <h4>💾 Your data</h4>
+      <p>Progress, notes, bookmarks and checklists are saved in your browser's <code>localStorage</code> — no internet or account needed. Use <b>Export</b> to back up to a JSON file and <b>Import</b> to restore or move devices.</p>
+      <h4>✨ Features</h4>
+      <ul>
+        <li>Dashboard, calendar, analytics & interview readiness meter</li>
+        <li>Search (Ctrl/⌘+K), track filters, bookmarks, local notes</li>
+        <li>Dark/light mode, printable days (🖨️ → Save as PDF), offline support</li>
+        <li>${countQA()} interview questions · ${TOTAL_DAYS} lessons · 12 tracks</li>
+      </ul>
+      <div class="callout tip"><b>Tip:</b> Print any day to PDF, or use your browser's "Save Page As" to keep a full offline copy.</div>
+    </div>`;
+    v.appendChild(c);
+  });
+
+  /* ---------- shared list card / empty ---------- */
+  function dayListCard(d,withStatus){
+    const done=!!S.done[d.id];
+    const c = el("div","card"); c.style.marginBottom="10px";
+    c.innerHTML = `<div style="display:flex;gap:10px;align-items:center;cursor:pointer" data-open="${d.id}">
+      <span class="chip brand">${secIcon(d.section)} W${d.week}·D${d.dayInWeek}</span>
+      <b style="font-size:14px;flex:1">${esc(d.t)}</b>
+      ${statusChip(d.id)}
+      <span class="chip ${done?'green':''}">${done?'✓ Done':'Pending'}</span></div>`;
+    if(withStatus){
+      const bar = el("div"); bar.style.cssText="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap";
+      STATUS_ORDER.forEach(k=>{
+        const b = el("button","btn "+(S.status[d.id]===k?'primary':'ghost'));
+        b.style.fontSize="12px"; b.style.padding="6px 11px";
+        b.innerHTML = `${STATUS[k].icon} ${STATUS[k].short}`;
+        b.onclick=(e)=>{ e.stopPropagation(); setStatus(d.id,k); render(); };
+        bar.appendChild(b);
+      });
+      c.appendChild(bar);
+    }
+    return c;
+  }
+  function emptyState(icon,title,sub){
+    const e = el("div","empty"); e.innerHTML=`<div class="big">${icon}</div><h3>${esc(title)}</h3><p>${esc(sub)}</p>`; return e;
+  }
+
+  /* ============================================================
+     SEARCH
+     ============================================================ */
+  const searchInput = $("#search");
+  const searchResults = $("#searchResults");
+  function doSearch(q){
+    q = q.trim().toLowerCase();
+    if(!q){ searchResults.classList.remove("show"); searchResults.innerHTML=""; return; }
+    const hits=[];
+    DAYS.forEach(d=>{
+      const hay = (d.t+" "+d.section+" "+d.obj.join(" ")+" "+d.qa.map(x=>x.q).join(" ")).toLowerCase();
+      if(hay.includes(q)) hits.push({d, label:d.t, sub:`Week ${d.week} · ${d.section}`});
+    });
+    // question-level hits
+    DAYS.forEach(d=>d.qa.forEach(qa=>{ if(qa.q.toLowerCase().includes(q)) hits.push({d,label:qa.q,sub:"Interview Q · "+d.t,qa:true}); }));
+    const seen=new Set();
+    const uniq = hits.filter(h=>{ const k=h.label+h.d.id; if(seen.has(k))return false; seen.add(k); return true; }).slice(0,12);
+    if(!uniq.length){ searchResults.innerHTML=`<div class="sr"><b>No matches</b><small>Try another term</small></div>`; searchResults.classList.add("show"); return; }
+    searchResults.innerHTML = uniq.map(h=>`<div class="sr" data-open="${h.d.id}">${h.qa?'💬 ':''}${highlight(h.label,q)}<small>${esc(h.sub)}</small></div>`).join("");
+    searchResults.classList.add("show");
+  }
+  function highlight(text,q){ const i=text.toLowerCase().indexOf(q); if(i<0)return esc(text); return esc(text.slice(0,i))+"<b>"+esc(text.slice(i,i+q.length))+"</b>"+esc(text.slice(i+q.length)); }
+  searchInput.addEventListener("input",()=>doSearch(searchInput.value));
+  searchInput.addEventListener("focus",()=>{ if(searchInput.value) doSearch(searchInput.value); });
+  document.addEventListener("click",e=>{ if(!e.target.closest(".search-wrap")) searchResults.classList.remove("show"); });
+  searchResults.addEventListener("click",e=>{ const sr=e.target.closest(".sr"); if(sr&&sr.dataset.open){ openDay(sr.dataset.open); searchInput.value=""; searchResults.classList.remove("show"); } });
+
+  /* ============================================================
+     GLOBAL CLICK DELEGATION (data-open / data-nav)
+     ============================================================ */
+  document.addEventListener("click",e=>{
+    const op = e.target.closest("[data-open]"); if(op){ openDay(op.dataset.open); return; }
+    const nv = e.target.closest("[data-nav]"); if(nv){ go(nv.dataset.nav); return; }
+  });
+
+  /* ============================================================
+     THEME
+     ============================================================ */
+  const themeBtn = $("#themeBtn");
+  function applyTheme(t){ document.documentElement.setAttribute("data-theme",t); themeBtn.textContent = t==="dark"?"🌙":"☀️"; S.theme=t; save(); }
+  themeBtn.onclick=()=>applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");
+  applyTheme(S.theme||"dark");
+
+  /* ============================================================
+     PRINT / MENU / IMPORT / EXPORT
+     ============================================================ */
+  $("#printBtn").onclick=()=>window.print();
+  const sidebar=$("#sidebar"), backdrop=$("#backdrop");
+  function closeSidebar(){ sidebar.classList.remove("open"); backdrop.classList.remove("show"); }
+  $("#menuBtn").onclick=()=>{ sidebar.classList.toggle("open"); backdrop.classList.toggle("show"); };
+  backdrop.onclick=closeSidebar;
+
+  document.querySelectorAll(".nav .item").forEach(a=>a.onclick=()=>go(a.dataset.route));
+
+  $("#exportBtn").onclick=()=>{
+    const blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+    const a = el("a"); a.href=URL.createObjectURL(blob); a.download="mastercard-swe-progress.json"; a.click();
+    toast("Progress exported");
+  };
+  $("#importBtn").onclick=()=>$("#importFile").click();
+  $("#importFile").onchange=e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=()=>{ try{ S=Object.assign(defaultState(),JSON.parse(r.result)); save(); applyTheme(S.theme||"dark"); render(); toast("Progress imported"); }catch(err){ toast("Invalid file"); } };
+    r.readAsText(f);
+  };
+
+  /* ---------- keyboard: Ctrl/Cmd+K ---------- */
+  document.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){ e.preventDefault(); searchInput.focus(); searchInput.select(); }
+    if(e.key==="Escape"){ searchResults.classList.remove("show"); closeSidebar(); }
+  });
+
+  /* ---------- boot ---------- */
+  if(!location.hash) location.hash="#/dashboard";
+  render();
+  updateBadges();
+})();
+</script>
+</body>
+</html>
